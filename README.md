@@ -46,3 +46,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Fix bottom navigation supaya tombol Home/Daftar/Deposit/Transfer/WD/Promo berfungsi.
 - Tombol Admin bawah sekarang membuka PIN Owner Settings, bukan link chat admin.
 - Tombol admin header dibuat sedikit lebih terlihat tapi tetap kecil/private.
+
+
+## v1.5.2
+- Fix total event handler tombol agar tidak mati karena JS cache/error.
+- Bottom nav memakai event delegation.
+- Tombol Admin header dan bottom nav membuka PIN Owner Settings.
+- CTA Daftar/Login/Chat tetap direct link dari config/settings.
