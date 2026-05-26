@@ -1,0 +1,19 @@
+PANDUAN CEPAT DEPLOY v1.7.2
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Cloudflare Pages:
+   - Framework preset: None
+   - Build command: kosong
+   - Build output directory: .
+   - Root directory: kosong
+3. Apps Script:
+   - Pakai file google-apps-script-v1.7.2.gs
+   - Paste ke Apps Script lama
+   - Save
+   - Deploy > Manage deployments > Edit > New version > Deploy
+4. Buka PWA > Admin:
+   - Isi Google Apps Script API URL
+   - Upload logo/banner/gambar/video dari galeri
+   - Link teknis otomatis disembunyikan
+   - Sistem akan mencoba auto push ke Google Sheet setelah upload
+5. Kalau Google Drive/Apps Script lambat, tunggu status upload selesai sebelum tutup halaman.

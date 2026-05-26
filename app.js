@@ -151,7 +151,7 @@ function render(){
 
   renderGuide();
   renderMedia();
-  renderFaq();
+  renderFaq(); updateUploadPreviews();
 }
 
 function setText(id, val){
@@ -290,6 +290,42 @@ function getPinAlertMessage(){
   return `Alert lokal: ada ${attempts.length} percobaan PIN salah di device ini. Terakhir: ${last.toLocaleString("id-ID")}.`;
 }
 
+
+function updateUploadPreviews(){
+  const labels = {
+    setLogo:"Logo sudah diupload",
+    setBanner:"Banner sudah diupload",
+    setImgDaftar:"Gambar daftar sudah diupload",
+    setVidDaftar:"Video daftar sudah diupload",
+    setImgDeposit:"Gambar deposit sudah diupload",
+    setVidDeposit:"Video deposit sudah diupload",
+    setImgTransfer:"Gambar transfer sudah diupload",
+    setVidTransfer:"Video transfer sudah diupload",
+    setImgWithdraw:"Gambar withdraw sudah diupload",
+    setVidWithdraw:"Video withdraw sudah diupload",
+    setImgPromo:"Gambar promo sudah diupload",
+    setVidPromo:"Video promo sudah diupload"
+  };
+  document.querySelectorAll("[data-preview-for]").forEach(el=>{
+    const target = el.dataset.previewFor;
+    const input = $(target);
+    const hasValue = !!(input && input.value && input.value.trim());
+    el.classList.toggle("has-file", hasValue);
+    el.textContent = hasValue ? (labels[target] || "File sudah diupload") : "Belum ada file";
+  });
+}
+
+async function autoPushAfterMediaChange(){
+  const gasUrl = getGasApiUrl();
+  if(!gasUrl) return;
+  try{
+    await pushConfigToGas();
+    setUploadStatus("Perubahan media berhasil otomatis dipush ke Google Sheet.");
+  }catch(err){
+    setUploadStatus("Media tersimpan lokal, tapi auto push gagal. Klik Push ke Google Sheet manual.");
+  }
+}
+
 function fillSettings(){
   setValue("setBrandName", config.brandName);
   setValue("setTagline", config.tagline);
@@ -321,6 +357,9 @@ function fillSettings(){
   setValue("setVidWithdraw", m.withdraw?.video || "");
   setValue("setImgPromo", m.promo?.image || "");
   setValue("setVidPromo", m.promo?.video || "");
+}
+
+updateUploadPreviews();
 }
 
 function setValue(id, val){
@@ -506,7 +545,9 @@ function bindEvents(){
       if(input) input.value = "";
       try{
         saveConfig(collectSettings());
-        setUploadStatus("Media berhasil dikosongkan. Klik Push ke Google Sheet agar semua member ikut update.");
+        updateUploadPreviews();
+        setUploadStatus("Media berhasil dikosongkan. Mencoba auto push ke Google Sheet...");
+        autoPushAfterMediaChange();
       }catch(err){
         alert(err.message || "Gagal mengosongkan media.");
       }
@@ -572,7 +613,7 @@ function bindEvents(){
     const blob = new Blob([JSON.stringify(clean, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "dukun138-guide-config-v1.7.json";
+    a.download = "dukun138-guide-config-v1.7.2.json";
     a.click();
     URL.revokeObjectURL(a.href);
   });

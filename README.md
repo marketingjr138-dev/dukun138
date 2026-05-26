@@ -88,3 +88,12 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Tambah tombol Install kecil di header saat browser mendukung install prompt.
 - Fallback logo header memakai `assets/logo-dukun138.png`.
 - Cache PWA dinaikkan ke v1.7.1.
+
+
+## v1.7.2
+- Link/path teknis media disembunyikan total dari tampilan admin.
+- Field media hanya menampilkan status: belum ada file / file sudah diupload.
+- Upload dari galeri otomatis mengisi link Drive di belakang layar.
+- Setelah upload, sistem mencoba auto push ke Google Sheet.
+- Hapus media juga mencoba auto push ke Google Sheet.
+- Default placeholder asset tidak lagi memenuhi field admin.
