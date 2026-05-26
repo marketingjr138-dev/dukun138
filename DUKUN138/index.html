@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="description" content="Panduan member: cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Panduan Member" />
+  <meta property="og:description" content="Cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo member." />
+  <meta property="og:image" content="assets/preview-share.png" />
+  <meta property="og:site_name" content="Panduan Member" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Panduan Member" />
+  <meta name="twitter:description" content="Cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo member." />
+  <meta name="twitter:image" content="assets/preview-share.png" />
+  <title>Panduan Member</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <img id="brandLogo" src="assets/logo-placeholder.svg" alt="Logo" />
+          <div>
+            <strong id="brandName">PANDUAN MEMBER</strong>
+            <span id="brandTagline">Daftar • Deposit QRIS • Transfer Saldo Game</span>
+          </div>
+        </div>
+        <button id="openSettings" class="icon-btn private-admin-trigger" aria-label="Admin Access" title="Admin Access">•</button>
+      </div>
+
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Panduan cepat untuk member baru</p>
+          <h1 id="heroTitle">Belum paham cara daftar, deposit, atau masuk game?</h1>
+          <p id="heroSubtitle">Ikuti tutorial step-by-step di bawah ini. Semua dibuat singkat, jelas, dan gampang dipahami dari HP.</p>
+          <div class="cta-row">
+            <a id="btnDaftar" class="btn primary" href="#" target="_blank" rel="noopener">Daftar Sekarang</a>
+            <a id="btnAdmin" class="btn ghost" href="#" target="_blank" rel="noopener">Chat Admin</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img id="heroBanner" src="assets/banner-placeholder.svg" alt="Banner panduan" />
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Pilih panduan</p>
+          <h2>Yang sering bikin member bingung</h2>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="daftar">Cara Daftar</button>
+          <button class="tab" data-tab="deposit">Deposit QRIS</button>
+          <button class="tab" data-tab="transfer">Transfer Saldo Game</button>
+          <button class="tab" data-tab="promo">Promo</button>
+        </div>
+
+        <div id="guideContent" class="guide-card"></div>
+      </section>
+
+      <section class="section video-section">
+        <div class="section-head">
+          <p class="eyebrow">Video tutorial</p>
+          <h2 id="videoTitle">Tonton panduan singkat</h2>
+          <p id="videoDesc">Kalau masih bingung, lihat video tutorial ini dari awal sampai akhir.</p>
+        </div>
+        <div class="video-frame">
+          <video id="tutorialVideo" controls playsinline preload="metadata" poster="assets/video-poster-placeholder.svg">
+            <source src="" type="video/mp4" />
+            Browser kamu belum mendukung video.
+          </video>
+          <div id="videoEmpty" class="empty-video">Video belum disetting. Masuk Settings untuk isi link video / upload nanti.</div>
+        </div>
+      </section>
+
+      <section class="section faq-section">
+        <div class="section-head">
+          <p class="eyebrow">Bantuan cepat</p>
+          <h2>Pertanyaan yang sering muncul</h2>
+        </div>
+        <div id="faqList" class="faq-list"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="#app">Home</a>
+      <a href="#guideContent">Tutorial</a>
+      <a id="navLogin" href="#" target="_blank" rel="noopener">Login</a>
+      <a id="navAdmin" href="#" target="_blank" rel="noopener">Admin</a>
+    </nav>
+  </div>
+
+  <dialog id="pinDialog" class="modal">
+    <form method="dialog" class="modal-card small">
+      <h3>Akses Settings</h3>
+      <p class="muted">Masukkan PIN owner untuk edit konten website.</p>
+      <input id="pinInput" type="password" inputmode="numeric" placeholder="PIN owner" />
+      <div class="modal-actions">
+        <button value="cancel" class="btn ghost" type="submit">Batal</button>
+        <button id="submitPin" value="ok" class="btn primary" type="button">Masuk</button>
+      </div>
+      <p id="pinError" class="error"></p>
+      <p id="pinAlertInfo" class="alert-info"></p>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" class="modal">
+    <form method="dialog" class="modal-card settings-form">
+      <div class="modal-title">
+        <div>
+          <h3>Owner Settings</h3>
+          <p class="muted">Dashboard admin private. Tanpa database. Data tersimpan lokal di device ini. Export config untuk backup/pakai ulang.</p>
+        </div>
+        <button class="icon-btn" value="cancel">✕</button>
+      </div>
+
+      <div class="form-grid">
+        <label>Nama Brand <input id="setBrandName" /></label>
+        <label>Tagline <input id="setTagline" /></label>
+        <label>Judul Hero <input id="setHeroTitle" /></label>
+        <label>Subjudul Hero <textarea id="setHeroSubtitle"></textarea></label>
+        <label>Link Daftar <input id="setDaftar" placeholder="https://..." /></label>
+        <label>Link Login <input id="setLogin" placeholder="https://..." /></label>
+        <label>Link Chat Admin / Cutt.ly <input id="setAdmin" placeholder="https://cutt.ly/adminresmi atau https://wa.me/62..." /></label>
+        <label>Link Logo <input id="setLogo" placeholder="assets/logo.png atau URL gambar" /></label>
+        <label>Link Banner <input id="setBanner" placeholder="assets/banner.jpg atau URL gambar" /></label>
+        <label>Link Video MP4 <input id="setVideo" placeholder="assets/tutorial.mp4 atau URL mp4" /></label>
+        <label>Google Apps Script API URL <input id="setGasApi" placeholder="https://script.google.com/macros/s/xxx/exec" /></label>
+        <label>PIN Settings <input id="setPin" type="password" inputmode="numeric" placeholder="Ganti PIN" /></label>
+      </div>
+
+      <h4>Isi Panduan</h4>
+      <div class="form-grid">
+        <label>Cara Daftar <textarea id="setDaftarSteps"></textarea></label>
+        <label>Deposit QRIS <textarea id="setDepositSteps"></textarea></label>
+        <label>Transfer Saldo Game <textarea id="setTransferSteps"></textarea></label>
+        <label>Promo <textarea id="setPromoSteps"></textarea></label>
+        <label>FAQ <textarea id="setFaq"></textarea></label>
+      </div>
+
+      <p id="pullStatus" class="pull-status"></p>
+      <div class="modal-actions wrap">
+        <button id="saveSettings" class="btn primary" type="button">Simpan Lokal</button>
+        <button id="pullRemoteConfig" class="btn ghost" type="button">Pull Config Online</button>
+        <button id="pushGasConfig" class="btn ghost" type="button">Push ke Google Sheet</button>
+        <button id="exportConfig" class="btn ghost" type="button">Export Config</button>
+        <label class="btn ghost file-label">Import Config<input id="importConfig" type="file" accept="application/json" hidden /></label>
+        <button id="resetSettings" class="btn danger" type="button">Reset Lokal</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
