@@ -96,3 +96,13 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Link/path teknis media tetap disembunyikan.
 - Field media default kosong.
 - Cache PWA dinaikkan ke v1.7.3.
+
+
+## v1.7.4
+- Tombol Admin di header dihapus.
+- Tombol Admin di bottom nav dihapus.
+- Akses admin disamarkan sebagai footer `© 2026`.
+- Tombol Install dinaikkan dan dirapikan agar tidak numpuk dengan tagline/header.
+- PIN memakai fallback `7788` kalau config pin kosong/rusak.
+- Tambah tombol reset PIN lokal ke `7788` di dialog PIN.
+- Cache PWA dinaikkan ke v1.7.4.

@@ -32,7 +32,7 @@
           <span id="brandTagline">Daftar • Deposit QRIS • Transfer • Withdraw</span>
         </div>
       </div>
-      <div class="header-actions"><button id="installPwaBtn" class="install-btn" type="button" hidden>Install</button><button id="openSettings" data-open-admin class="private-admin-trigger" aria-label="Admin Access" title="Admin Access">Admin</button></div>
+      <div class="header-actions"><button id="installPwaBtn" class="install-btn" type="button" hidden>Install</button></div>
     </header>
 
     <main>
@@ -104,6 +104,10 @@
         </div>
         <div id="faqList" class="faq-list"></div>
       </section>
+
+      <footer class="private-footer">
+        <button type="button" class="copyright-admin" data-open-admin aria-label="Copyright">© 2026</button>
+      </footer>
     </main>
 
     <nav class="bottom-nav" aria-label="Navigasi cepat">
@@ -113,7 +117,6 @@
       <button type="button" data-nav-tab="transfer">Transfer</button>
       <button type="button" data-nav-tab="withdraw">WD</button>
       <button type="button" data-nav-tab="promo">Promo</button>
-      <button type="button" id="navOwner" data-open-admin>Admin</button>
     </nav>
   </div>
 
@@ -128,6 +131,7 @@
       </div>
       <p id="pinError" class="error"></p>
       <p id="pinAlertInfo" class="alert-info"></p>
+      <button id="resetLocalPin" class="reset-pin-link" type="button">Reset PIN lokal ke 7788</button>
     </form>
   </dialog>
 

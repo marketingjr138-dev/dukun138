@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-7-3-recovery";
+const CACHE_NAME = "dukun138-guide-pwa-v1-7-4-private-admin";
 const ASSETS = [
   "./",
   "./index.html",

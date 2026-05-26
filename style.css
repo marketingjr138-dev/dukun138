@@ -143,3 +143,63 @@ input[readonly]{
 .tab:active{transform:scale(.98)}
 .step-item strong{display:block;margin-bottom:4px;color:var(--text)}
 .step-item span{display:block;color:var(--muted);line-height:1.45}
+
+
+/* v1.7.4 privacy admin + install positioning */
+.header-actions{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  transform:translateY(-7px);
+}
+.install-btn{
+  position:relative;
+  top:-2px;
+  border:1px solid rgba(245,198,93,.18);
+  background:linear-gradient(135deg,rgba(245,198,93,.18),rgba(184,121,32,.12));
+  color:var(--gold);
+  border-radius:999px;
+  min-height:28px;
+  padding:0 12px;
+  font-size:11px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+.install-btn[hidden]{display:none!important}
+.private-admin-trigger{display:none!important}
+.bottom-nav{
+  padding-right:10px;
+}
+.private-footer{
+  margin:28px 0 88px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.copyright-admin{
+  border:none;
+  background:transparent;
+  color:rgba(216,194,163,.42);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  padding:10px 18px;
+  border-radius:999px;
+  cursor:pointer;
+}
+.copyright-admin:active,
+.copyright-admin:hover{
+  color:rgba(245,198,93,.74);
+  background:rgba(245,198,93,.06);
+}
+.reset-pin-link{
+  margin-top:10px;
+  border:none;
+  background:transparent;
+  color:rgba(245,198,93,.72);
+  font-size:12px;
+  font-weight:900;
+  text-decoration:underline;
+  cursor:pointer;
+}
