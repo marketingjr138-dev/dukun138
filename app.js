@@ -89,6 +89,48 @@ async function pushConfigToGas(){
   }
 }
 
+
+function normalizeDriveImageUrl(url){
+  url = String(url || "").trim();
+  if(!url) return "";
+  const idMatch =
+    url.match(/[?&]id=([^&]+)/) ||
+    url.match(/\/d\/([^/]+)/) ||
+    url.match(/\/file\/d\/([^/]+)/);
+  if(!idMatch) return url;
+  const id = idMatch[1];
+  // This format is generally more stable for <img> display than uc?export=download.
+  return `https://lh3.googleusercontent.com/d/${id}=w1600`;
+}
+
+function normalizeMediaUrl(url, type){
+  if(type === "image") return normalizeDriveImageUrl(url);
+  return String(url || "").trim();
+}
+
+function attachImageFallback(img){
+  if(!img || img.dataset.fallbackBound === "1") return;
+  img.dataset.fallbackBound = "1";
+  img.addEventListener("error", () => {
+    const src = img.getAttribute("src") || "";
+    const idMatch =
+      src.match(/[?&]id=([^&]+)/) ||
+      src.match(/\/d\/([^/=]+)/) ||
+      src.match(/\/file\/d\/([^/]+)/);
+    if(idMatch && img.dataset.driveFallbackTried !== "1"){
+      img.dataset.driveFallbackTried = "1";
+      img.src = `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1600`;
+      return;
+    }
+    if(img.id === "brandLogo"){
+      img.src = "assets/logo-dukun138.png";
+    }
+    if(img.id === "heroBanner"){
+      img.src = "assets/banner-placeholder.svg";
+    }
+  });
+}
+
 function render(){
   setText("brandName", config.brandName || "DUKUN138 GUIDE");
   setText("brandTagline", config.tagline || "");
@@ -105,7 +147,13 @@ function render(){
   renderGuide(); renderMedia(); renderFaq(); updateUploadPreviews();
 }
 function setText(id,val){const el=$(id); if(el) el.textContent=val||"";}
-function setSrc(id,val){const el=$(id); if(el) el.src=val||"";}
+function setSrc(id,val){
+  const el=$(id);
+  if(el){
+    attachImageFallback(el);
+    el.src=normalizeMediaUrl(val||"", "image");
+  }
+}
 function setHref(id,val){const el=$(id); if(el) el.href=safeLink(val);}
 
 function renderGuide(){
@@ -121,7 +169,7 @@ function renderMedia(){
   const media=(config.media && config.media[activeTab]) || {};
   const img=$("tutorialImage"), imageEmpty=$("imageEmpty");
   if(img && imageEmpty){
-    if(media.image && media.image.trim()){img.src=media.image.trim();img.style.display="block";imageEmpty.style.display="none";}
+    if(media.image && media.image.trim()){attachImageFallback(img);img.src=normalizeMediaUrl(media.image.trim(),"image");img.style.display="block";imageEmpty.style.display="none";}
     else{img.removeAttribute("src");img.style.display="none";imageEmpty.style.display="flex";}
   }
   const vid=$("tutorialVideo"), videoEmpty=$("videoEmpty");
@@ -219,10 +267,11 @@ async function uploadMediaFile(file,targetId){
     const res=await fetch(gasUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"uploadFile",fileName:file.name,mimeType:file.type||"application/octet-stream",folderTag:getUploadFolderName(targetId),base64})});
     const payload=await res.json();
     if(!payload.ok) throw new Error(payload.error||"Upload gagal");
-    setValue(targetId, payload.url);
+    const isImageTarget = ["setLogo","setBanner","setImgDaftar","setImgDeposit","setImgTransfer","setImgWithdraw","setImgPromo"].includes(targetId);
+    setValue(targetId, isImageTarget ? normalizeMediaUrl(payload.displayUrl || payload.url, "image") : (payload.url || payload.displayUrl || ""));
     saveConfig(collectSettings());
     updateUploadPreviews();
-    setUploadStatus(`Upload berhasil: ${file.name}. Klik Push ke Google Sheet.`);
+    setUploadStatus(`Upload berhasil: ${file.name}. Link display sudah distabilkan. Klik Push ke Google Sheet.`);
   }catch(err){console.error(err); setUploadStatus("Upload gagal. Cek Apps Script URL, permission, dan ukuran file."); alert("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");}
 }
 
@@ -246,7 +295,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.4.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.5.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

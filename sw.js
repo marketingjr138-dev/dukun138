@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-7-4-private-admin";
+const CACHE_NAME = "dukun138-guide-pwa-v1-7-5-drive-media";
 const ASSETS = [
   "./",
   "./index.html",

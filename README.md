@@ -106,3 +106,11 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - PIN memakai fallback `7788` kalau config pin kosong/rusak.
 - Tambah tombol reset PIN lokal ke `7788` di dialog PIN.
 - Cache PWA dinaikkan ke v1.7.4.
+
+
+## v1.7.5 Stable Drive Media Fix
+- URL gambar Google Drive dinormalisasi ke format `lh3.googleusercontent.com/d/FILE_ID=w1600`.
+- Fallback image error ke `drive.google.com/thumbnail`.
+- Header logo fallback tetap ke app icon lokal.
+- Apps Script upload mengembalikan `displayUrl`, `thumbnailUrl`, dan `downloadUrl`.
+- Wajib update Apps Script ke `google-apps-script-v1.7.5.gs` lalu upload logo ulang.

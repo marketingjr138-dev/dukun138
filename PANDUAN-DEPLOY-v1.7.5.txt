@@ -1,0 +1,14 @@
+PANDUAN CEPAT DEPLOY v1.7.5
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Apps Script:
+   - Pakai google-apps-script-v1.7.5.gs
+   - Paste ke Apps Script lama
+   - Save
+   - Deploy > Manage deployments > Edit > New version > Deploy
+3. Kenapa wajib update Apps Script?
+   - v1.7.5 mengubah URL display gambar Google Drive agar logo/banner lebih stabil tampil.
+4. Setelah deploy:
+   - Clear site data atau buka incognito untuk test.
+   - Upload logo ulang dari Admin.
+   - Klik Push ke Google Sheet.

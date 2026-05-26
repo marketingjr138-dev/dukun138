@@ -1,11 +1,11 @@
 /**
- * DUKUN138 GUIDE PWA v1.7.4 - Google Apps Script Sync
+ * DUKUN138 GUIDE PWA v1.7.5 - Google Apps Script Sync
  * Google Sheet sebagai master konten ringan untuk PWA tutorial member.
  */
 const SHEET_NAME = 'CONFIG';
 const LOG_SHEET_NAME = 'LOGS';
 const DEFAULT_CONFIG = {
-  "version": "1.7.4",
+  "version": "1.7.5",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
@@ -138,7 +138,7 @@ function doPost(e) {
 
     if (body.action === 'saveConfig') {
       saveConfigToSheet(body.config || {});
-      logAction('saveConfig', 'ok', 'Config updated from PWA v1.7.4');
+      logAction('saveConfig', 'ok', 'Config updated from PWA v1.7.5');
       return jsonResponse({ ok: true, message: 'Config saved' });
     }
     return jsonResponse({ ok: false, error: 'Unknown action' });
@@ -196,7 +196,7 @@ function saveConfigToSheet(config) {
 
 function configToRows(config) {
   return [
-    ['version', config.version || '1.7.4', 'versi config'],
+    ['version', config.version || '1.7.5', 'versi config'],
     ['pin', config.pin || '7788', 'PIN admin PWA'],
     ['brandName', config.brandName || '', 'nama brand'],
     ['tagline', config.tagline || '', 'tagline kecil'],
@@ -216,6 +216,7 @@ function configToRows(config) {
 
 function uploadFileToDrive(body) {
   if (!body || !body.base64) throw new Error('No file data');
+
   const folder = getOrCreateMediaFolder_(body.folderTag || 'media');
   const bytes = Utilities.base64Decode(body.base64);
   const safeName = sanitizeFileName_((body.fileName || 'upload-file').toString());
@@ -228,12 +229,19 @@ function uploadFileToDrive(body) {
   } catch (err) {}
 
   const id = file.getId();
-  const directUrl = 'https://drive.google.com/uc?export=download&id=' + id;
+  const isImage = String(mimeType).indexOf('image/') === 0;
+  const downloadUrl = 'https://drive.google.com/uc?export=download&id=' + id;
+  const thumbnailUrl = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1600';
+  const lh3Url = 'https://lh3.googleusercontent.com/d/' + id + '=w1600';
+
   return {
     id: id,
     name: file.getName(),
     mimeType: mimeType,
-    url: directUrl,
+    url: isImage ? lh3Url : downloadUrl,
+    displayUrl: isImage ? lh3Url : downloadUrl,
+    thumbnailUrl: thumbnailUrl,
+    downloadUrl: downloadUrl,
     viewUrl: file.getUrl()
   };
 }
