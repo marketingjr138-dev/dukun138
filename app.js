@@ -138,7 +138,7 @@ function render(){
   setText("heroTitle", config.heroTitle || "");
   setText("heroSubtitle", config.heroSubtitle || "");
 
-  setSrc("brandLogo", config.logo || "assets/logo-placeholder.svg");
+  setSrc("brandLogo", config.logo || "assets/logo-dukun138.png");
   setSrc("heroBanner", config.banner || "assets/banner-placeholder.svg");
 
   setHref("btnDaftar", config.daftarLink);
@@ -613,8 +613,37 @@ function preventZoom(){
   document.addEventListener("gesturestart", e => e.preventDefault());
 }
 
+
+let deferredInstallPrompt = null;
+
+function bindInstallPrompt(){
+  const btn = $("installPwaBtn");
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if(btn) btn.hidden = false;
+  });
+
+  btn?.addEventListener("click", async () => {
+    if(!deferredInstallPrompt){
+      alert("Kalau tombol install belum muncul dari browser, pakai menu titik tiga browser lalu pilih Tambahkan ke layar utama / Install app.");
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    btn.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    if(btn) btn.hidden = true;
+  });
+}
+
 function start(){
   bindEvents();
+  bindInstallPrompt();
   preventZoom();
   render();
   pullRemoteConfig();

@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-7-upload-first";
+const CACHE_NAME = "dukun138-guide-pwa-v1-7-1-install-icons";
 const ASSETS = [
   "./",
   "./index.html",
@@ -17,7 +17,10 @@ const ASSETS = [
   "./assets/tutorial-withdraw-placeholder.svg",
   "./assets/tutorial-promo-placeholder.svg",
   "./assets/icon-192.png",
-  "./assets/icon-512.png"
+  "./assets/icon-512.png",
+  "./assets/icon-180.png",
+  "./assets/logo-dukun138.png",
+  "./assets/favicon.ico"
 ];
 
 self.addEventListener("install", event => {

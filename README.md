@@ -80,3 +80,11 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Ganti PIN wajib memakai PIN lama, PIN baru, dan konfirmasi PIN baru.
 - Apps Script update ke `google-apps-script-v1.7.gs`.
 - Untuk gambar Google Drive, Apps Script memakai URL thumbnail agar lebih stabil tampil di `<img>`.
+
+
+## v1.7.1 PWA Install + Favicon
+- Favicon dan app icon diganti memakai logo DUKUN138 yang baru.
+- Manifest dibuat lebih lengkap untuk install PWA.
+- Tambah tombol Install kecil di header saat browser mendukung install prompt.
+- Fallback logo header memakai `assets/logo-dukun138.png`.
+- Cache PWA dinaikkan ke v1.7.1.

@@ -103,3 +103,21 @@ input[readonly]{
   padding:10px 12px;
   background:rgba(245,198,93,.06);
 }
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.install-btn{
+  border:1px solid rgba(245,198,93,.18);
+  background:linear-gradient(135deg,rgba(245,198,93,.18),rgba(184,121,32,.12));
+  color:var(--gold);
+  border-radius:999px;
+  min-height:30px;
+  padding:0 11px;
+  font-size:11px;
+  font-weight:950;
+  cursor:pointer;
+}
+.install-btn[hidden]{display:none}

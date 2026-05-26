@@ -1,0 +1,13 @@
+PANDUAN CEPAT DEPLOY v1.7.1
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Cloudflare Pages:
+   - Framework preset: None
+   - Build command: kosong
+   - Build output directory: .
+   - Root directory: kosong
+3. Setelah deploy:
+   - Buka site di Chrome Android.
+   - Refresh 2x.
+   - Kalau belum muncul install, buka menu titik tiga browser > Tambahkan ke layar utama / Install app.
+4. Kalau masih belum berubah, clear site data atau uninstall PWA lama lalu buka ulang.

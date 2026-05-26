@@ -4,7 +4,7 @@ window.GAS_API_URL = ""; // isi dengan URL Web App Google Apps Script untuk sync
 window.CONFIG_SOURCE = "auto"; // auto | gas | json
 
 window.DEFAULT_CONFIG = {
-  "version": "1.7.0",
+  "version": "1.7.1",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
