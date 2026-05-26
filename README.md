@@ -90,10 +90,9 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Cache PWA dinaikkan ke v1.7.1.
 
 
-## v1.7.2
-- Link/path teknis media disembunyikan total dari tampilan admin.
-- Field media hanya menampilkan status: belum ada file / file sudah diupload.
-- Upload dari galeri otomatis mengisi link Drive di belakang layar.
-- Setelah upload, sistem mencoba auto push ke Google Sheet.
-- Hapus media juga mencoba auto push ke Google Sheet.
-- Default placeholder asset tidak lagi memenuhi field admin.
+## v1.7.3 Recovery Fix
+- Rebuild app.js dari basis stabil supaya tombol tidak mati.
+- Pilih Panduan atas, bottom nav, Admin, Install, Upload, Save, Pull, Push kembali aktif.
+- Link/path teknis media tetap disembunyikan.
+- Field media default kosong.
+- Cache PWA dinaikkan ke v1.7.3.

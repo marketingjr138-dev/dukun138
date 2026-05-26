@@ -1,0 +1,16 @@
+PANDUAN CEPAT DEPLOY v1.7.3
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Cloudflare Pages:
+   - Framework preset: None
+   - Build command: kosong
+   - Build output directory: .
+   - Root directory: kosong
+3. Apps Script:
+   - Pakai file google-apps-script-v1.7.3.gs
+   - Paste ke Apps Script lama
+   - Save
+   - Deploy > Manage deployments > Edit > New version > Deploy
+4. Setelah deploy, di HP:
+   - Clear site data / buka incognito dulu untuk test.
+   - Kalau PWA lama sudah terinstall, uninstall dulu lalu buka ulang.

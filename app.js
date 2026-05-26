@@ -7,6 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 let config = loadConfig();
 let activeTab = getInitialTab();
+let deferredInstallPrompt = null;
 
 function loadConfig(){
   try{
@@ -16,119 +17,75 @@ function loadConfig(){
     return window.DEFAULT_CONFIG || {};
   }
 }
-
 function mergeConfig(base, incoming){
   incoming = incoming || {};
-  return {
-    ...base,
-    ...incoming,
-    guides: {...(base.guides || {}), ...(incoming.guides || {})},
-    media: {...(base.media || {}), ...(incoming.media || {})},
-    faq: incoming.faq || base.faq || []
-  };
+  return {...base,...incoming,guides:{...(base.guides||{}),...(incoming.guides||{})},media:{...(base.media||{}),...(incoming.media||{})},faq:incoming.faq || base.faq || []};
 }
-
 function getInitialTab(){
-  const hash = (location.hash || "").replace("#", "");
-  if(allowedTabs.includes(hash)) return hash;
-  const saved = localStorage.getItem(ACTIVE_TAB_KEY);
-  return allowedTabs.includes(saved) ? saved : "daftar";
+  const h=(location.hash||"").replace("#","");
+  if(allowedTabs.includes(h)) return h;
+  const s=localStorage.getItem(ACTIVE_TAB_KEY);
+  return allowedTabs.includes(s)?s:"daftar";
 }
-
-function safeLink(link){
-  return link && String(link).trim() ? String(link).trim() : "#";
-}
-
-function getGasApiUrl(){
-  return (localStorage.getItem(GAS_URL_KEY) || window.GAS_API_URL || "").trim();
-}
-
-function setGasApiUrl(url){
-  localStorage.setItem(GAS_URL_KEY, (url || "").trim());
-}
-
-function setPullStatus(message){
-  const el = $("pullStatus");
-  if(el) el.textContent = message || "";
-}
-
-function saveConfig(next){
-  config = mergeConfig(window.DEFAULT_CONFIG || {}, {...next, __localOverride: true});
-  localStorage.setItem(KEY, JSON.stringify(config));
-  render();
-}
+function safeLink(link){return link && String(link).trim()?String(link).trim():"#";}
+function getGasApiUrl(){return (localStorage.getItem(GAS_URL_KEY)||window.GAS_API_URL||"").trim();}
+function setGasApiUrl(url){localStorage.setItem(GAS_URL_KEY,(url||"").trim());}
+function setPullStatus(msg){const el=$("pullStatus"); if(el) el.textContent=msg||"";}
+function setUploadStatus(msg){const el=$("uploadStatus"); if(el) el.textContent=msg||"";}
+function saveConfig(next){config=mergeConfig(window.DEFAULT_CONFIG||{}, {...next,__localOverride:true}); localStorage.setItem(KEY,JSON.stringify(config)); render();}
 
 async function pullRemoteConfig(){
   if(!window.AUTO_PULL_CONFIG) return;
-  const gasUrl = getGasApiUrl();
-  const source = window.CONFIG_SOURCE || "auto";
-
-  if(gasUrl && (source === "auto" || source === "gas")){
+  const gasUrl=getGasApiUrl(); const source=window.CONFIG_SOURCE||"auto";
+  if(gasUrl && (source==="auto" || source==="gas")){
     try{
-      const res = await fetch(`${gasUrl}?action=getConfig&v=${Date.now()}`, {cache:"no-store"});
+      const res=await fetch(`${gasUrl}?action=getConfig&v=${Date.now()}`,{cache:"no-store"});
       if(!res.ok) throw new Error("GAS fetch failed");
-      const payload = await res.json();
-      if(payload && payload.ok === false) throw new Error(payload.error || "GAS payload error");
-      applyRemoteConfig(payload.config || payload);
+      const payload=await res.json();
+      if(payload && payload.ok===false) throw new Error(payload.error||"GAS payload error");
+      applyRemoteConfig(payload.config||payload);
       setPullStatus("Konten terbaru berhasil ditarik dari Google Sheet.");
       return;
     }catch(err){
       setPullStatus("Gagal pull Google Sheet. Mencoba fallback config.json...");
-      if(source === "gas") return;
+      if(source==="gas") return;
     }
   }
-
-  if(!window.CONFIG_URL) return;
   try{
-    const res = await fetch(`${window.CONFIG_URL}?v=${Date.now()}`, {cache:"no-store"});
+    const res=await fetch(`${window.CONFIG_URL||"config.json"}?v=${Date.now()}`,{cache:"no-store"});
     if(!res.ok) throw new Error("Config fetch failed");
-    const remote = await res.json();
+    const remote=await res.json();
     applyRemoteConfig(remote);
     setPullStatus("Konten terbaru berhasil ditarik dari config.json.");
   }catch(err){
     try{
-      const cached = JSON.parse(localStorage.getItem(REMOTE_CACHE_KEY) || "null");
-      if(cached){
-        config = mergeConfig(window.DEFAULT_CONFIG || {}, cached);
-        render();
-        setPullStatus("Mode offline: memakai cache konten terakhir.");
-      }
+      const cached=JSON.parse(localStorage.getItem(REMOTE_CACHE_KEY)||"null");
+      if(cached){config=mergeConfig(window.DEFAULT_CONFIG||{}, cached); render(); setPullStatus("Mode offline: memakai cache konten terakhir.");}
     }catch(e){}
   }
 }
-
 function applyRemoteConfig(remote){
   localStorage.setItem(REMOTE_CACHE_KEY, JSON.stringify(remote));
-  const localOverride = JSON.parse(localStorage.getItem(KEY) || "null");
-  config = mergeConfig(window.DEFAULT_CONFIG || {}, remote);
-  if(localOverride && localOverride.__localOverride === true){
-    config = mergeConfig(config, localOverride);
-  }
+  const localOverride=JSON.parse(localStorage.getItem(KEY)||"null");
+  config=mergeConfig(window.DEFAULT_CONFIG||{}, remote);
+  if(localOverride && localOverride.__localOverride===true) config=mergeConfig(config, localOverride);
   render();
 }
-
 async function pushConfigToGas(){
-  const gasUrl = getGasApiUrl();
-  if(!gasUrl){
-    alert("Isi dulu Google Apps Script API URL.");
-    return;
-  }
+  const gasUrl=getGasApiUrl();
+  if(!gasUrl){alert("Isi dulu Google Apps Script API URL."); return;}
   try{
     setPullStatus("Mengirim config ke Google Sheet...");
-    const cleanConfig = {...config};
-    delete cleanConfig.__localOverride;
-    const res = await fetch(gasUrl, {
-      method: "POST",
-      headers: {"Content-Type":"text/plain;charset=utf-8"},
-      body: JSON.stringify({action:"saveConfig", config: cleanConfig})
-    });
-    const payload = await res.json();
-    if(!payload.ok) throw new Error(payload.error || "Gagal simpan");
+    const clean={...config}; delete clean.__localOverride;
+    const res=await fetch(gasUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"saveConfig",config:clean})});
+    const payload=await res.json();
+    if(!payload.ok) throw new Error(payload.error||"Gagal simpan");
     setPullStatus("Config berhasil dikirim ke Google Sheet.");
-    alert("Berhasil push ke Google Sheet.");
+    return true;
   }catch(err){
     setPullStatus("Gagal push ke Google Sheet.");
     alert("Gagal push ke Google Sheet. Cek URL Web App dan permission Apps Script.");
+    return false;
   }
 }
 
@@ -137,564 +94,156 @@ function render(){
   setText("brandTagline", config.tagline || "");
   setText("heroTitle", config.heroTitle || "");
   setText("heroSubtitle", config.heroSubtitle || "");
-
   setSrc("brandLogo", config.logo || "assets/logo-dukun138.png");
   setSrc("heroBanner", config.banner || "assets/banner-placeholder.svg");
-
   setHref("btnDaftar", config.daftarLink);
   setHref("btnLogin", config.loginLink);
   setHref("btnAdmin", config.adminLink);
   setHref("btnAdminBottom", config.adminLink);
-
-  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === activeTab));
-  document.querySelectorAll("[data-nav-tab]").forEach(b => b.classList.toggle("active", b.dataset.navTab === activeTab));
-
-  renderGuide();
-  renderMedia();
-  renderFaq(); updateUploadPreviews();
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active", b.dataset.tab===activeTab));
+  document.querySelectorAll("[data-nav-tab]").forEach(b=>b.classList.toggle("active", b.dataset.navTab===activeTab));
+  renderGuide(); renderMedia(); renderFaq(); updateUploadPreviews();
 }
-
-function setText(id, val){
-  const el = $(id);
-  if(el) el.textContent = val || "";
-}
-
-function setSrc(id, val){
-  const el = $(id);
-  if(el) el.src = val || "";
-}
-
-function setHref(id, val){
-  const el = $(id);
-  if(el) el.href = safeLink(val);
-}
+function setText(id,val){const el=$(id); if(el) el.textContent=val||"";}
+function setSrc(id,val){const el=$(id); if(el) el.src=val||"";}
+function setHref(id,val){const el=$(id); if(el) el.href=safeLink(val);}
 
 function renderGuide(){
-  const labels = {
-    daftar:"Cara Daftar", deposit:"Deposit QRIS", transfer:"Transfer Saldo ke Game",
-    withdraw:"Cara Withdraw", promo:"Info Promo"
-  };
-  const desc = {
-    daftar:"Ikuti langkah pendaftaran akun dari awal sampai bisa login.",
-    deposit:"Panduan deposit memakai QRIS atau metode pembayaran yang tersedia.",
-    transfer:"Cara memindahkan saldo utama ke provider/game tujuan.",
-    withdraw:"Cara tarik saldo dari akun utama ke rekening/e-wallet tujuan.",
-    promo:"Info singkat sebelum klaim bonus atau promo aktif."
-  };
-  const steps = (config.guides && config.guides[activeTab]) || [];
-  const el = $("guideContent");
-  if(!el) return;
-  el.innerHTML = `
-    <p class="eyebrow">${labels[activeTab] || "Panduan"}</p>
-    <h3>${labels[activeTab] || "Panduan"}</h3>
-    <p class="muted">${desc[activeTab] || ""}</p>
-    <ul class="step-list">
-      ${steps.map((step, i) => `
-        <li class="step-item">
-          <div class="step-num">${i+1}</div>
-          <div><strong>Langkah ${i+1}</strong><span>${escapeHtml(step)}</span></div>
-        </li>
-      `).join("")}
-    </ul>
-  `;
+  const labels={daftar:"Cara Daftar",deposit:"Deposit QRIS",transfer:"Transfer Saldo ke Game",withdraw:"Cara Withdraw",promo:"Info Promo"};
+  const desc={daftar:"Ikuti langkah pendaftaran akun dari awal sampai bisa login.",deposit:"Panduan deposit memakai QRIS atau metode pembayaran yang tersedia.",transfer:"Cara memindahkan saldo utama ke provider/game tujuan.",withdraw:"Cara tarik saldo dari akun utama ke rekening/e-wallet tujuan.",promo:"Info singkat sebelum klaim bonus atau promo aktif."};
+  const steps=(config.guides && config.guides[activeTab]) || [];
+  const el=$("guideContent"); if(!el) return;
+  el.innerHTML=`<p class="eyebrow">${labels[activeTab]||"Panduan"}</p><h3>${labels[activeTab]||"Panduan"}</h3><p class="muted">${desc[activeTab]||""}</p><ul class="step-list">${steps.map((step,i)=>`<li class="step-item"><div class="step-num">${i+1}</div><div><strong>Langkah ${i+1}</strong><span>${escapeHtml(step)}</span></div></li>`).join("")}</ul>`;
 }
-
 function renderMedia(){
-  const labels = {daftar:"Tutorial Daftar",deposit:"Tutorial Deposit QRIS",transfer:"Tutorial Transfer Saldo Game",withdraw:"Tutorial Withdraw",promo:"Tutorial Promo"};
-  setText("mediaTitle", `${labels[activeTab] || "Tutorial"} format HP`);
-
-  const media = (config.media && config.media[activeTab]) || {};
-  const img = $("tutorialImage");
-  const imageEmpty = $("imageEmpty");
+  const labels={daftar:"Tutorial Daftar",deposit:"Tutorial Deposit QRIS",transfer:"Tutorial Transfer Saldo Game",withdraw:"Tutorial Withdraw",promo:"Tutorial Promo"};
+  setText("mediaTitle", `${labels[activeTab]||"Tutorial"} format HP`);
+  const media=(config.media && config.media[activeTab]) || {};
+  const img=$("tutorialImage"), imageEmpty=$("imageEmpty");
   if(img && imageEmpty){
-    if(media.image && media.image.trim()){
-      img.src = media.image.trim();
-      img.style.display = "block";
-      imageEmpty.style.display = "none";
-    } else {
-      img.removeAttribute("src");
-      img.style.display = "none";
-      imageEmpty.style.display = "flex";
-    }
+    if(media.image && media.image.trim()){img.src=media.image.trim();img.style.display="block";imageEmpty.style.display="none";}
+    else{img.removeAttribute("src");img.style.display="none";imageEmpty.style.display="flex";}
   }
-
-  const vid = $("tutorialVideo");
-  const videoEmpty = $("videoEmpty");
+  const vid=$("tutorialVideo"), videoEmpty=$("videoEmpty");
   if(vid && videoEmpty){
-    const source = vid.querySelector("source");
-    if(media.video && media.video.trim()){
-      source.src = media.video.trim();
-      videoEmpty.style.display = "none";
-      vid.style.display = "block";
-      vid.load();
-    } else {
-      source.src = "";
-      vid.style.display = "block";
-      videoEmpty.style.display = "flex";
-      vid.load();
-    }
+    const source=vid.querySelector("source");
+    if(media.video && media.video.trim()){source.src=media.video.trim();videoEmpty.style.display="none";vid.style.display="block";vid.load();}
+    else{source.src="";vid.style.display="block";videoEmpty.style.display="flex";vid.load();}
   }
 }
-
 function renderFaq(){
-  const el = $("faqList");
-  if(!el) return;
-  el.innerHTML = (config.faq || []).map(([q,a]) => `
-    <details class="faq-item">
-      <summary>${escapeHtml(q)}</summary>
-      <p>${escapeHtml(a)}</p>
-    </details>
-  `).join("");
+  const el=$("faqList"); if(!el) return;
+  el.innerHTML=(config.faq||[]).map(([q,a])=>`<details class="faq-item"><summary>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join("");
 }
-
-function escapeHtml(text){
-  return String(text || "").replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[m]));
-}
-
-function setActiveTab(tab){
-  if(!allowedTabs.includes(tab)) tab = "daftar";
-  activeTab = tab;
-  localStorage.setItem(ACTIVE_TAB_KEY, activeTab);
-  if(location.hash.replace("#","") !== activeTab) history.replaceState(null, "", `#${activeTab}`);
-  render();
-}
+function escapeHtml(text){return String(text||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function setActiveTab(tab){if(!allowedTabs.includes(tab)) tab="daftar"; activeTab=tab; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); if(location.hash.replace("#","")!==activeTab) history.replaceState(null,"",`#${activeTab}`); render();}
 
 function openAdminPin(){
-  const pin = $("pinInput");
-  const err = $("pinError");
-  const alertInfo = $("pinAlertInfo");
-  if(pin) pin.value = "";
-  if(err) err.textContent = "";
-  if(alertInfo) alertInfo.textContent = getPinAlertMessage();
-  const dialog = $("pinDialog");
-  if(dialog && typeof dialog.showModal === "function") dialog.showModal();
-  else alert("Browser tidak mendukung dialog. PIN admin default: " + (config.pin || "7788"));
+  setValue("pinInput",""); setText("pinError",""); setText("pinAlertInfo", getPinAlertMessage());
+  const d=$("pinDialog");
+  if(d && typeof d.showModal==="function") d.showModal(); else alert("Browser tidak mendukung popup admin.");
 }
-
-function recordFailedPinAttempt(){
-  const attempts = JSON.parse(localStorage.getItem("slotGuideFailedPinAttempts") || "[]");
-  attempts.push({time: new Date().toISOString()});
-  localStorage.setItem("slotGuideFailedPinAttempts", JSON.stringify(attempts.slice(-20)));
-}
-
-function clearPinAttempts(){
-  localStorage.removeItem("slotGuideFailedPinAttempts");
-}
-
-function getPinAlertMessage(){
-  const attempts = JSON.parse(localStorage.getItem("slotGuideFailedPinAttempts") || "[]");
-  if(!attempts.length) return "";
-  const last = new Date(attempts[attempts.length - 1].time);
-  return `Alert lokal: ada ${attempts.length} percobaan PIN salah di device ini. Terakhir: ${last.toLocaleString("id-ID")}.`;
-}
-
-
-function updateUploadPreviews(){
-  const labels = {
-    setLogo:"Logo sudah diupload",
-    setBanner:"Banner sudah diupload",
-    setImgDaftar:"Gambar daftar sudah diupload",
-    setVidDaftar:"Video daftar sudah diupload",
-    setImgDeposit:"Gambar deposit sudah diupload",
-    setVidDeposit:"Video deposit sudah diupload",
-    setImgTransfer:"Gambar transfer sudah diupload",
-    setVidTransfer:"Video transfer sudah diupload",
-    setImgWithdraw:"Gambar withdraw sudah diupload",
-    setVidWithdraw:"Video withdraw sudah diupload",
-    setImgPromo:"Gambar promo sudah diupload",
-    setVidPromo:"Video promo sudah diupload"
-  };
-  document.querySelectorAll("[data-preview-for]").forEach(el=>{
-    const target = el.dataset.previewFor;
-    const input = $(target);
-    const hasValue = !!(input && input.value && input.value.trim());
-    el.classList.toggle("has-file", hasValue);
-    el.textContent = hasValue ? (labels[target] || "File sudah diupload") : "Belum ada file";
-  });
-}
-
-async function autoPushAfterMediaChange(){
-  const gasUrl = getGasApiUrl();
-  if(!gasUrl) return;
-  try{
-    await pushConfigToGas();
-    setUploadStatus("Perubahan media berhasil otomatis dipush ke Google Sheet.");
-  }catch(err){
-    setUploadStatus("Media tersimpan lokal, tapi auto push gagal. Klik Push ke Google Sheet manual.");
-  }
-}
+function recordFailedPinAttempt(){const a=JSON.parse(localStorage.getItem("slotGuideFailedPinAttempts")||"[]"); a.push({time:new Date().toISOString()}); localStorage.setItem("slotGuideFailedPinAttempts",JSON.stringify(a.slice(-20)));}
+function clearPinAttempts(){localStorage.removeItem("slotGuideFailedPinAttempts");}
+function getPinAlertMessage(){const a=JSON.parse(localStorage.getItem("slotGuideFailedPinAttempts")||"[]"); if(!a.length)return""; const last=new Date(a[a.length-1].time); return `Alert lokal: ada ${a.length} percobaan PIN salah di device ini. Terakhir: ${last.toLocaleString("id-ID")}.`;}
 
 function fillSettings(){
-  setValue("setBrandName", config.brandName);
-  setValue("setTagline", config.tagline);
-  setValue("setHeroTitle", config.heroTitle);
-  setValue("setHeroSubtitle", config.heroSubtitle);
-  setValue("setDaftar", config.daftarLink);
-  setValue("setLogin", config.loginLink);
-  setValue("setAdmin", config.adminLink);
-  setValue("setLogo", config.logo);
-  setValue("setBanner", config.banner);
-  setValue("setGasApi", getGasApiUrl());
-  setValue("setPinOld", ""); setValue("setPinNew", ""); setValue("setPinConfirm", "");
-
-  setValue("setDaftarSteps", ((config.guides || {}).daftar || []).join("\n"));
-  setValue("setDepositSteps", ((config.guides || {}).deposit || []).join("\n"));
-  setValue("setTransferSteps", ((config.guides || {}).transfer || []).join("\n"));
-  setValue("setWithdrawSteps", ((config.guides || {}).withdraw || []).join("\n"));
-  setValue("setPromoSteps", ((config.guides || {}).promo || []).join("\n"));
-  setValue("setFaq", (config.faq || []).map(([q,a]) => `${q} | ${a}`).join("\n"));
-
-  const m = config.media || {};
-  setValue("setImgDaftar", m.daftar?.image || "");
-  setValue("setVidDaftar", m.daftar?.video || "");
-  setValue("setImgDeposit", m.deposit?.image || "");
-  setValue("setVidDeposit", m.deposit?.video || "");
-  setValue("setImgTransfer", m.transfer?.image || "");
-  setValue("setVidTransfer", m.transfer?.video || "");
-  setValue("setImgWithdraw", m.withdraw?.image || "");
-  setValue("setVidWithdraw", m.withdraw?.video || "");
-  setValue("setImgPromo", m.promo?.image || "");
-  setValue("setVidPromo", m.promo?.video || "");
+  setValue("setBrandName", config.brandName); setValue("setTagline", config.tagline); setValue("setHeroTitle", config.heroTitle); setValue("setHeroSubtitle", config.heroSubtitle);
+  setValue("setDaftar", config.daftarLink); setValue("setLogin", config.loginLink); setValue("setAdmin", config.adminLink);
+  setValue("setLogo", config.logo || ""); setValue("setBanner", config.banner || ""); setValue("setGasApi", getGasApiUrl());
+  setValue("setPinOld",""); setValue("setPinNew",""); setValue("setPinConfirm","");
+  setValue("setDaftarSteps", ((config.guides||{}).daftar||[]).join("\n"));
+  setValue("setDepositSteps", ((config.guides||{}).deposit||[]).join("\n"));
+  setValue("setTransferSteps", ((config.guides||{}).transfer||[]).join("\n"));
+  setValue("setWithdrawSteps", ((config.guides||{}).withdraw||[]).join("\n"));
+  setValue("setPromoSteps", ((config.guides||{}).promo||[]).join("\n"));
+  setValue("setFaq", (config.faq||[]).map(([q,a])=>`${q} | ${a}`).join("\n"));
+  const m=config.media||{};
+  setValue("setImgDaftar", m.daftar?.image||""); setValue("setVidDaftar", m.daftar?.video||"");
+  setValue("setImgDeposit", m.deposit?.image||""); setValue("setVidDeposit", m.deposit?.video||"");
+  setValue("setImgTransfer", m.transfer?.image||""); setValue("setVidTransfer", m.transfer?.video||"");
+  setValue("setImgWithdraw", m.withdraw?.image||""); setValue("setVidWithdraw", m.withdraw?.video||"");
+  setValue("setImgPromo", m.promo?.image||""); setValue("setVidPromo", m.promo?.video||"");
+  updateUploadPreviews();
 }
-
-updateUploadPreviews();
+function setValue(id,val){const el=$(id); if(el) el.value=val||"";}
+function updateUploadPreviews(){
+  const labels={setLogo:"Logo sudah diupload",setBanner:"Banner sudah diupload",setImgDaftar:"Gambar daftar sudah diupload",setVidDaftar:"Video daftar sudah diupload",setImgDeposit:"Gambar deposit sudah diupload",setVidDeposit:"Video deposit sudah diupload",setImgTransfer:"Gambar transfer sudah diupload",setVidTransfer:"Video transfer sudah diupload",setImgWithdraw:"Gambar withdraw sudah diupload",setVidWithdraw:"Video withdraw sudah diupload",setImgPromo:"Gambar promo sudah diupload",setVidPromo:"Video promo sudah diupload"};
+  document.querySelectorAll("[data-preview-for]").forEach(el=>{const target=el.dataset.previewFor; const input=$(target); const has=!!(input&&input.value&&input.value.trim()); el.classList.toggle("has-file",has); el.textContent=has?(labels[target]||"File sudah diupload"):"Belum ada file";});
 }
-
-function setValue(id, val){
-  const el = $(id);
-  if(el) el.value = val || "";
-}
-
-function lines(text){
-  return String(text || "").split("\n").map(x => x.trim()).filter(Boolean);
-}
-
-function parseFaq(text){
-  return String(text || "").split("\n").map(row => {
-    const [q, ...rest] = row.split("|");
-    return [q?.trim(), rest.join("|").trim()];
-  }).filter(([q,a]) => q && a);
-}
-
+function lines(text){return String(text||"").split("\n").map(x=>x.trim()).filter(Boolean);}
+function parseFaq(text){return String(text||"").split("\n").map(row=>{const [q,...rest]=row.split("|"); return [q?.trim(), rest.join("|").trim()];}).filter(([q,a])=>q&&a);}
 function getNextPinOrThrow(){
-  const oldPin = $("setPinOld")?.value.trim() || "";
-  const newPin = $("setPinNew")?.value.trim() || "";
-  const confirmPin = $("setPinConfirm")?.value.trim() || "";
+  const oldPin=$("setPinOld")?.value.trim()||"", newPin=$("setPinNew")?.value.trim()||"", confirmPin=$("setPinConfirm")?.value.trim()||"";
   if(!oldPin && !newPin && !confirmPin) return config.pin;
-  if(oldPin !== config.pin) throw new Error("PIN lama salah. PIN tidak diganti.");
-  if(!newPin || newPin.length < 4) throw new Error("PIN baru minimal 4 digit/karakter.");
-  if(newPin !== confirmPin) throw new Error("Ulangi PIN baru belum sama.");
+  if(oldPin!==config.pin) throw new Error("PIN lama salah. PIN tidak diganti.");
+  if(!newPin || newPin.length<4) throw new Error("PIN baru minimal 4 digit/karakter.");
+  if(newPin!==confirmPin) throw new Error("Ulangi PIN baru belum sama.");
   return newPin;
 }
-
 function collectSettings(){
-  return {
-    ...config,
-    brandName: $("setBrandName")?.value.trim() || "",
-    tagline: $("setTagline")?.value.trim() || "",
-    heroTitle: $("setHeroTitle")?.value.trim() || "",
-    heroSubtitle: $("setHeroSubtitle")?.value.trim() || "",
-    daftarLink: $("setDaftar")?.value.trim() || "",
-    loginLink: $("setLogin")?.value.trim() || "",
-    adminLink: $("setAdmin")?.value.trim() || "",
-    logo: $("setLogo")?.value.trim() || "assets/logo-placeholder.svg",
-    banner: $("setBanner")?.value.trim() || "assets/banner-placeholder.svg",
-    pin: getNextPinOrThrow(),
-    guides: {
-      daftar: lines($("setDaftarSteps")?.value),
-      deposit: lines($("setDepositSteps")?.value),
-      transfer: lines($("setTransferSteps")?.value),
-      withdraw: lines($("setWithdrawSteps")?.value),
-      promo: lines($("setPromoSteps")?.value)
-    },
-    media: {
-      daftar: { image: $("setImgDaftar")?.value.trim() || "", video: $("setVidDaftar")?.value.trim() || "" },
-      deposit: { image: $("setImgDeposit")?.value.trim() || "", video: $("setVidDeposit")?.value.trim() || "" },
-      transfer: { image: $("setImgTransfer")?.value.trim() || "", video: $("setVidTransfer")?.value.trim() || "" },
-      withdraw: { image: $("setImgWithdraw")?.value.trim() || "", video: $("setVidWithdraw")?.value.trim() || "" },
-      promo: { image: $("setImgPromo")?.value.trim() || "", video: $("setVidPromo")?.value.trim() || "" }
-    },
-    faq: parseFaq($("setFaq")?.value)
-  };
+  return {...config,brandName:$("setBrandName")?.value.trim()||"",tagline:$("setTagline")?.value.trim()||"",heroTitle:$("setHeroTitle")?.value.trim()||"",heroSubtitle:$("setHeroSubtitle")?.value.trim()||"",daftarLink:$("setDaftar")?.value.trim()||"",loginLink:$("setLogin")?.value.trim()||"",adminLink:$("setAdmin")?.value.trim()||"",logo:$("setLogo")?.value.trim()||"",banner:$("setBanner")?.value.trim()||"",pin:getNextPinOrThrow(),guides:{daftar:lines($("setDaftarSteps")?.value),deposit:lines($("setDepositSteps")?.value),transfer:lines($("setTransferSteps")?.value),withdraw:lines($("setWithdrawSteps")?.value),promo:lines($("setPromoSteps")?.value)},media:{daftar:{image:$("setImgDaftar")?.value.trim()||"",video:$("setVidDaftar")?.value.trim()||""},deposit:{image:$("setImgDeposit")?.value.trim()||"",video:$("setVidDeposit")?.value.trim()||""},transfer:{image:$("setImgTransfer")?.value.trim()||"",video:$("setVidTransfer")?.value.trim()||""},withdraw:{image:$("setImgWithdraw")?.value.trim()||"",video:$("setVidWithdraw")?.value.trim()||""},promo:{image:$("setImgPromo")?.value.trim()||"",video:$("setVidPromo")?.value.trim()||""}},faq:parseFaq($("setFaq")?.value)};
 }
 
-
-function setUploadStatus(message){
-  const el = $("uploadStatus");
-  if(el) el.textContent = message || "";
-}
-
-function fileToBase64(file){
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      const base64 = result.includes(",") ? result.split(",")[1] : result;
-      resolve(base64);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function getUploadFolderName(targetId){
-  const map = {
-    setLogo: "logo",
-    setBanner: "banner",
-    setImgDaftar: "daftar-image",
-    setVidDaftar: "daftar-video",
-    setImgDeposit: "deposit-image",
-    setVidDeposit: "deposit-video",
-    setImgTransfer: "transfer-image",
-    setVidTransfer: "transfer-video",
-    setImgWithdraw: "withdraw-image",
-    setVidWithdraw: "withdraw-video",
-    setImgPromo: "promo-image",
-    setVidPromo: "promo-video"
-  };
-  return map[targetId] || "media";
-}
-
-async function uploadMediaFile(file, targetId){
-  const gasUrl = getGasApiUrl();
-  if(!gasUrl){
-    alert("Isi dulu Google Apps Script API URL sebelum upload file.");
-    return;
-  }
-  if(!file || !targetId) return;
-
-  const isVideo = file.type.startsWith("video/");
-  const maxSize = isVideo ? 30 * 1024 * 1024 : 5 * 1024 * 1024;
-  if(file.size > maxSize){
-    alert(isVideo ? "Video terlalu besar. Usahakan maksimal 30MB." : "Gambar terlalu besar. Usahakan maksimal 5MB.");
-    return;
-  }
-
+function fileToBase64(file){return new Promise((resolve,reject)=>{const reader=new FileReader(); reader.onload=()=>{const result=String(reader.result||""); resolve(result.includes(",")?result.split(",")[1]:result);}; reader.onerror=reject; reader.readAsDataURL(file);});}
+function getUploadFolderName(targetId){const map={setLogo:"logo",setBanner:"banner",setImgDaftar:"daftar-image",setVidDaftar:"daftar-video",setImgDeposit:"deposit-image",setVidDeposit:"deposit-video",setImgTransfer:"transfer-image",setVidTransfer:"transfer-video",setImgWithdraw:"withdraw-image",setVidWithdraw:"withdraw-video",setImgPromo:"promo-image",setVidPromo:"promo-video"}; return map[targetId]||"media";}
+async function uploadMediaFile(file,targetId){
+  const gasUrl=getGasApiUrl(); if(!gasUrl){alert("Isi dulu Google Apps Script API URL sebelum upload file."); return;}
+  if(!file||!targetId) return;
+  const isVideo=file.type.startsWith("video/"), maxSize=isVideo?30*1024*1024:5*1024*1024;
+  if(file.size>maxSize){alert(isVideo?"Video terlalu besar. Maksimal 30MB.":"Gambar terlalu besar. Maksimal 5MB."); return;}
   try{
     setUploadStatus(`Mengupload ${file.name}... jangan tutup halaman.`);
-    const base64 = await fileToBase64(file);
-    const res = await fetch(gasUrl, {
-      method: "POST",
-      headers: {"Content-Type":"text/plain;charset=utf-8"},
-      body: JSON.stringify({
-        action: "uploadFile",
-        fileName: file.name,
-        mimeType: file.type || "application/octet-stream",
-        folderTag: getUploadFolderName(targetId),
-        base64
-      })
-    });
-    const payload = await res.json();
-    if(!payload.ok) throw new Error(payload.error || "Upload gagal");
-
-    const input = $(targetId);
-    if(input) input.value = payload.url;
-
-    setUploadStatus(`Upload berhasil: ${file.name}. Link sudah masuk ke field.`);
+    const base64=await fileToBase64(file);
+    const res=await fetch(gasUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"uploadFile",fileName:file.name,mimeType:file.type||"application/octet-stream",folderTag:getUploadFolderName(targetId),base64})});
+    const payload=await res.json();
+    if(!payload.ok) throw new Error(payload.error||"Upload gagal");
+    setValue(targetId, payload.url);
     saveConfig(collectSettings());
-    alert("Upload berhasil. Jangan lupa Push ke Google Sheet agar semua member ikut update.");
-  }catch(err){
-    console.error(err);
-    setUploadStatus("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");
-    alert("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");
-  }
+    updateUploadPreviews();
+    setUploadStatus(`Upload berhasil: ${file.name}. Klik Push ke Google Sheet.`);
+  }catch(err){console.error(err); setUploadStatus("Upload gagal. Cek Apps Script URL, permission, dan ukuran file."); alert("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");}
 }
 
 function bindEvents(){
-
-  document.querySelectorAll(".upload-input").forEach(input => {
-    input.addEventListener("change", async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if(!file) return;
-      await uploadMediaFile(file, e.target.dataset.uploadTarget);
-      e.target.value = "";
-    });
+  document.addEventListener("click",(e)=>{
+    const tab=e.target.closest(".tab[data-tab]");
+    if(tab){e.preventDefault(); setActiveTab(tab.dataset.tab); document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth",block:"start"}); return;}
+    const admin=e.target.closest("[data-open-admin]");
+    if(admin){e.preventDefault(); openAdminPin(); return;}
+    const navTab=e.target.closest("[data-nav-tab]");
+    if(navTab){e.preventDefault(); setActiveTab(navTab.dataset.navTab); document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth",block:"start"}); return;}
+    const clear=e.target.closest(".clear-media[data-clear-target]");
+    if(clear){e.preventDefault(); setValue(clear.dataset.clearTarget,""); try{saveConfig(collectSettings()); updateUploadPreviews(); setUploadStatus("Media dikosongkan. Klik Push ke Google Sheet.");}catch(err){alert(err.message||"Gagal mengosongkan media.");} return;}
+    const home=e.target.closest('[data-nav="home"]');
+    if(home){e.preventDefault(); history.replaceState(null,"","#app"); window.scrollTo({top:0,behavior:"smooth"}); return;}
   });
-
-  document.addEventListener("click", (e) => {
-    const guideTab = e.target.closest(".tab[data-tab]");
-    if(guideTab){
-      e.preventDefault();
-      setActiveTab(guideTab.dataset.tab);
-      document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth", block:"start"});
-      return;
-    }
-
-    const adminBtn = e.target.closest("[data-open-admin]");
-    if(adminBtn){
-      e.preventDefault();
-      openAdminPin();
-      return;
-    }
-
-    const navTab = e.target.closest("[data-nav-tab]");
-    if(navTab){
-      e.preventDefault();
-      setActiveTab(navTab.dataset.navTab);
-      document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth", block:"start"});
-      return;
-    }
-
-    const clearBtn = e.target.closest(".clear-media[data-clear-target]");
-    if(clearBtn){
-      e.preventDefault();
-      const target = clearBtn.dataset.clearTarget;
-      const input = $(target);
-      if(input) input.value = "";
-      try{
-        saveConfig(collectSettings());
-        updateUploadPreviews();
-        setUploadStatus("Media berhasil dikosongkan. Mencoba auto push ke Google Sheet...");
-        autoPushAfterMediaChange();
-      }catch(err){
-        alert(err.message || "Gagal mengosongkan media.");
-      }
-      return;
-    }
-
-    const homeBtn = e.target.closest('[data-nav="home"]');
-    if(homeBtn){
-      e.preventDefault();
-      history.replaceState(null, "", "#app");
-      window.scrollTo({top:0, behavior:"smooth"});
-      return;
-    }
-  });
-
-  $("submitPin")?.addEventListener("click", () => {
-    if($("pinInput")?.value === config.pin){
-      $("pinDialog")?.close();
-      clearPinAttempts();
-      fillSettings();
-      $("settingsDialog")?.showModal();
-    } else {
-      recordFailedPinAttempt();
-      setText("pinError", "PIN salah. Akses ditolak.");
-      setText("pinAlertInfo", getPinAlertMessage());
-    }
-  });
-
-  $("saveSettings")?.addEventListener("click", () => {
-  try{
-    setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
-    saveConfig(collectSettings());
-    $("settingsDialog")?.close();
-  }catch(err){
-    alert(err.message || "Setting belum valid.");
-  }
-});
-
-  $("pullRemoteConfig")?.addEventListener("click", async () => {
-    setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
-    localStorage.removeItem(KEY);
-    await pullRemoteConfig();
-    fillSettings();
-  });
-
-  $("pushGasConfig")?.addEventListener("click", async () => {
-    setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
-    await pushConfigToGas();
-  });
-
-  $("resetSettings")?.addEventListener("click", () => {
-    if(confirm("Reset setting lokal di device ini?")){
-      localStorage.removeItem(KEY);
-      config = loadConfig();
-      render();
-      $("settingsDialog")?.close();
-    }
-  });
-
-  $("exportConfig")?.addEventListener("click", () => {
-    const clean = {...config};
-    delete clean.__localOverride;
-    const blob = new Blob([JSON.stringify(clean, null, 2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "dukun138-guide-config-v1.7.2.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
-
-  $("importConfig")?.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if(!file) return;
-    try{
-      const data = JSON.parse(await file.text());
-      saveConfig(data);
-      fillSettings();
-      alert("Config berhasil diimport.");
-    }catch(err){
-      alert("File config tidak valid.");
-    }
-  });
-
-  window.addEventListener("hashchange", () => {
-    const next = (location.hash || "").replace("#", "");
-    if(allowedTabs.includes(next)){
-      activeTab = next;
-      localStorage.setItem(ACTIVE_TAB_KEY, activeTab);
-      render();
-    }
-  });
+  document.querySelectorAll(".upload-input").forEach(input=>input.addEventListener("change",async(e)=>{const file=e.target.files&&e.target.files[0]; if(!file)return; await uploadMediaFile(file,e.target.dataset.uploadTarget); e.target.value="";}));
+  $("submitPin")?.addEventListener("click",()=>{if($("pinInput")?.value===config.pin){$("pinDialog")?.close(); clearPinAttempts(); fillSettings(); $("settingsDialog")?.showModal();}else{recordFailedPinAttempt(); setText("pinError","PIN salah. Akses ditolak."); setText("pinAlertInfo",getPinAlertMessage());}});
+  $("saveSettings")?.addEventListener("click",()=>{try{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); saveConfig(collectSettings()); $("settingsDialog")?.close();}catch(err){alert(err.message||"Setting belum valid.");}});
+  $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
+  $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
+  $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.3.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
+  window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }
-
+function bindInstallPrompt(){
+  const btn=$("installPwaBtn");
+  window.addEventListener("beforeinstallprompt",(e)=>{e.preventDefault(); deferredInstallPrompt=e; if(btn) btn.hidden=false;});
+  btn?.addEventListener("click",async()=>{if(!deferredInstallPrompt){alert("Kalau tombol install belum muncul, pakai menu titik tiga browser lalu pilih Tambahkan ke layar utama / Install app."); return;} deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt=null; btn.hidden=true;});
+  window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null; if(btn) btn.hidden=true;});
+}
 function preventZoom(){
   document.body.classList.add("no-zoom");
-  let lastTouchEnd = 0;
-  document.addEventListener("touchstart", e => { if(e.touches.length > 1) e.preventDefault(); }, {passive:false});
-  document.addEventListener("touchmove", e => { if(e.touches.length > 1) e.preventDefault(); }, {passive:false});
-  document.addEventListener("touchend", e => {
-    const now = Date.now();
-    if(now - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = now;
-  }, {passive:false});
-  document.addEventListener("gesturestart", e => e.preventDefault());
+  let lastTouchEnd=0;
+  document.addEventListener("touchstart",e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+  document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+  document.addEventListener("touchend",e=>{const now=Date.now(); if(now-lastTouchEnd<=300)e.preventDefault(); lastTouchEnd=now;},{passive:false});
+  document.addEventListener("gesturestart",e=>e.preventDefault());
 }
-
-
-let deferredInstallPrompt = null;
-
-function bindInstallPrompt(){
-  const btn = $("installPwaBtn");
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    if(btn) btn.hidden = false;
-  });
-
-  btn?.addEventListener("click", async () => {
-    if(!deferredInstallPrompt){
-      alert("Kalau tombol install belum muncul dari browser, pakai menu titik tiga browser lalu pilih Tambahkan ke layar utama / Install app.");
-      return;
-    }
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt = null;
-    btn.hidden = true;
-  });
-
-  window.addEventListener("appinstalled", () => {
-    deferredInstallPrompt = null;
-    if(btn) btn.hidden = true;
-  });
-}
-
 function start(){
-  bindEvents();
-  bindInstallPrompt();
-  preventZoom();
-  render();
-  pullRemoteConfig();
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("sw.js").catch(()=>{});
-  }
+  bindEvents(); bindInstallPrompt(); preventZoom(); render(); pullRemoteConfig();
+  if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
 }
-
-if(document.readyState === "loading"){
-  document.addEventListener("DOMContentLoaded", start);
-} else {
-  start();
-}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start); else start();
