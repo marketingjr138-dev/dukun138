@@ -1,5 +1,5 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-7-5-drive-media";
-const ASSETS = [
+const CACHE_NAME = "dukun138-guide-pwa-v1-7-7-private-pin";
+const CORE_ASSETS = [
   "./",
   "./index.html",
   "./style.css",
@@ -7,40 +7,59 @@ const ASSETS = [
   "./config.js",
   "./config.json",
   "./manifest.webmanifest",
-  "./assets/logo-placeholder.svg",
-  "./assets/banner-placeholder.svg",
-  "./assets/preview-share.png",
-  "./assets/video-poster-placeholder.svg",
-  "./assets/tutorial-daftar-placeholder.svg",
-  "./assets/tutorial-deposit-placeholder.svg",
-  "./assets/tutorial-transfer-placeholder.svg",
-  "./assets/tutorial-withdraw-placeholder.svg",
-  "./assets/tutorial-promo-placeholder.svg",
+  "./assets/favicon.ico",
+  "./assets/logo-dukun138.png",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
-  "./assets/icon-180.png",
-  "./assets/logo-dukun138.png",
-  "./assets/favicon.ico"
+  "./assets/banner-placeholder.svg",
+  "./assets/video-poster-placeholder.svg"
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(CORE_ASSETS.map(url => cache.add(url)))
+    )
+  );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
+    )
+  );
   self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
   const req = event.request;
-  if(req.method !== "GET") return;
+  if (req.method !== "GET") return;
+
+  const url = new URL(req.url);
+
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy)).catch(()=>{});
+        return res;
+      }).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
   event.respondWith(
-    fetch(req).then(response => {
-      const clone = response.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(req, clone)).catch(()=>{});
-      return response;
-    }).catch(() => caches.match(req).then(cached => cached || caches.match("./index.html")))
+    caches.match(req).then(cached => {
+      const network = fetch(req).then(res => {
+        if (res && res.status === 200 && url.origin === self.location.origin) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, copy)).catch(()=>{});
+        }
+        return res;
+      }).catch(() => cached);
+      return cached || network;
+    })
   );
 });

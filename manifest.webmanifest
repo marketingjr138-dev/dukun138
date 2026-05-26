@@ -1,10 +1,10 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "DUKUN138 Guide",
   "short_name": "DUKUN138",
   "description": "Panduan member DUKUN138 untuk cara daftar, deposit QRIS, transfer saldo game, withdraw, dan promo.",
-  "start_url": "/?source=pwa",
-  "scope": "/",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
   "display_override": [
     "standalone",
@@ -13,10 +13,6 @@
   "orientation": "portrait-primary",
   "background_color": "#080502",
   "theme_color": "#1b1209",
-  "categories": [
-    "utilities",
-    "business"
-  ],
   "icons": [
     {
       "src": "assets/icon-192.png",

@@ -203,3 +203,9 @@ input[readonly]{
   text-decoration:underline;
   cursor:pointer;
 }
+
+/* v1.7.7 privacy: hide public PIN reset UI */
+.reset-pin-link,
+#resetLocalPin{
+  display:none!important;
+}

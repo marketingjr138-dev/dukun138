@@ -114,3 +114,19 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Header logo fallback tetap ke app icon lokal.
 - Apps Script upload mengembalikan `displayUrl`, `thumbnailUrl`, dan `downloadUrl`.
 - Wajib update Apps Script ke `google-apps-script-v1.7.5.gs` lalu upload logo ulang.
+
+
+## v1.7.6 PWA Install Stable
+- Manifest memakai `start_url: ./?source=pwa` dan `scope: ./` agar stabil di Cloudflare Pages.
+- Service worker dibuat tahan gagal: cache asset memakai `Promise.allSettled`.
+- Navigation fallback ke `index.html`.
+- Service worker register memakai `./sw.js` dan `scope: ./`.
+- Icon PWA/fav icon dipastikan ada di semua ukuran penting.
+- Logic ini mengikuti pola yang lebih stabil seperti SATSET/PLAYZONE.
+
+
+## v1.7.7 Private PIN Reset
+- Tombol `Reset PIN lokal ke 7788` dihapus dari UI.
+- Akses admin tetap disamarkan lewat footer `© 2026`.
+- Fallback PIN internal tetap ada jika config pin kosong/rusak.
+- Jika lupa PIN, reset dilakukan dari Google Sheet/config, bukan tombol publik.
