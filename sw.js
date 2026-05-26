@@ -1,4 +1,4 @@
-const CACHE_NAME = "slot-guide-pwa-v1-4-gas-sync";
+const CACHE_NAME = "dukun138-guide-pwa-v1-5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,10 +9,15 @@ const ASSETS = [
   "./manifest.webmanifest",
   "./assets/logo-placeholder.svg",
   "./assets/banner-placeholder.svg",
+  "./assets/preview-share.png",
   "./assets/video-poster-placeholder.svg",
+  "./assets/tutorial-daftar-placeholder.svg",
+  "./assets/tutorial-deposit-placeholder.svg",
+  "./assets/tutorial-transfer-placeholder.svg",
+  "./assets/tutorial-withdraw-placeholder.svg",
+  "./assets/tutorial-promo-placeholder.svg",
   "./assets/icon-192.png",
-  "./assets/icon-512.png",
-  "./assets/preview-share.png"
+  "./assets/icon-512.png"
 ];
 
 self.addEventListener("install", event => {
@@ -21,20 +26,18 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
-  );
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
   self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
+  const req = event.request;
+  if(req.method !== "GET") return;
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+    fetch(req).then(response => {
       const clone = response.clone();
-      if(event.request.method === "GET"){
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(()=>{});
-      }
+      caches.open(CACHE_NAME).then(cache => cache.put(req, clone)).catch(()=>{});
       return response;
-    }).catch(() => caches.match("./index.html")))
+    }).catch(() => caches.match(req).then(cached => cached || caches.match("./index.html")))
   );
 });

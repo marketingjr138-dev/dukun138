@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
-<defs><radialGradient id="r" cx="50%" cy="38%" r="65%"><stop stop-color="#3b4666"/><stop offset=".55" stop-color="#111827"/><stop offset="1" stop-color="#080b12"/></radialGradient><linearGradient id="g" x1="0" x2="1"><stop stop-color="#f5c451"/><stop offset="1" stop-color="#b98219"/></linearGradient></defs>
-<rect width="1400" height="900" fill="url(#r)"/>
-<circle cx="1080" cy="180" r="180" fill="#f5c451" opacity=".18"/>
-<rect x="105" y="145" width="1190" height="610" rx="64" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="3"/>
-<text x="700" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="82" font-weight="900" fill="#f9fafb">TUTORIAL MEMBER</text>
-<text x="700" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="900" fill="url(#g)">DAFTAR • QRIS • TRANSFER GAME</text>
-<text x="700" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#a7b0c0">Ganti banner ini lewat Owner Settings</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><radialGradient id="r" cx="46%" cy="32%" r="70%"><stop stop-color="#6b3f16"/><stop offset=".42" stop-color="#241509"/><stop offset="1" stop-color="#080502"/></radialGradient><linearGradient id="g" x1="0" x2="1"><stop stop-color="#f5c65d"/><stop offset="1" stop-color="#b87920"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#r)"/>
+<g opacity=".25" stroke="#f5c65d" fill="none"><circle cx="800" cy="350" r="250" stroke-width="4"/><circle cx="800" cy="350" r="180" stroke-width="2"/><path d="M800 80 L865 350 L800 620 L735 350 Z" stroke-width="3"/><path d="M520 350 H1080 M800 80 V620" stroke-width="3"/></g>
+<rect x="120" y="160" width="1360" height="640" rx="70" fill="rgba(255,255,255,.045)" stroke="rgba(245,198,93,.32)" stroke-width="4"/>
+<text x="800" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="96" font-weight="900" fill="#fff8ec">PANDUAN MEMBER</text>
+<text x="800" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="url(#g)">DAFTAR • QRIS • TRANSFER • WITHDRAW</text>
+<text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#d8c2a3">Nuansa coklat mistik premium DUKUN138</text>
 </svg>

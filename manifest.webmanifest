@@ -1,12 +1,12 @@
 {
-  "name": "Panduan Member",
-  "short_name": "Panduan",
+  "name": "DUKUN138 Guide",
+  "short_name": "DUKUN Guide",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#080b12",
-  "theme_color": "#111827",
-  "description": "PWA panduan member untuk cara daftar, deposit QRIS, transfer saldo game, dan promo.",
+  "background_color": "#080502",
+  "theme_color": "#1b1209",
+  "description": "PWA panduan member DUKUN138 untuk cara daftar, deposit QRIS, transfer saldo game, withdraw, dan promo.",
   "icons": [
     {
       "src": "assets/icon-192.png",

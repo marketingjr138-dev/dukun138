@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+<defs><radialGradient id="r" cx="50%" cy="18%" r="70%"><stop stop-color="#5b3513"/><stop offset=".45" stop-color="#1b1209"/><stop offset="1" stop-color="#080502"/></radialGradient><linearGradient id="g" x1="0" x2="1"><stop stop-color="#f5c65d"/><stop offset="1" stop-color="#b87920"/></linearGradient></defs>
+<rect width="1080" height="1920" fill="url(#r)"/>
+<g opacity=".22" stroke="#f5c65d" fill="none"><circle cx="540" cy="430" r="260" stroke-width="4"/><circle cx="540" cy="430" r="190" stroke-width="3"/><path d="M540 160 L600 430 L540 700 L480 430 Z" stroke-width="3"/><path d="M270 430 H810 M540 160 V700" stroke-width="3"/></g>
+<rect x="84" y="138" width="912" height="1644" rx="70" fill="rgba(255,255,255,.045)" stroke="rgba(245,198,93,.35)" stroke-width="5"/>
+<circle cx="540" cy="310" r="86" fill="rgba(245,198,93,.18)" stroke="#f5c65d" stroke-width="4"/>
+<text x="540" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="82" font-weight="900" fill="#fff8ec">PROMO</text>
+<text x="540" y="790" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="url(#g)">Info klaim bonus</text>
+<text x="540" y="930" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#d8c2a3">Ganti gambar ini lewat Owner Settings</text>
+<text x="540" y="1540" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="900" fill="#f5c65d">FORMAT 9:16</text>
+</svg>

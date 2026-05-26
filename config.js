@@ -4,49 +4,99 @@ window.GAS_API_URL = ""; // isi dengan URL Web App Google Apps Script untuk sync
 window.CONFIG_SOURCE = "auto"; // auto | gas | json
 
 window.DEFAULT_CONFIG = {
-  pin: "7788",
-  brandName: "PANDUAN MEMBER",
-  tagline: "Daftar • Deposit QRIS • Transfer Saldo Game",
-  heroTitle: "Belum paham cara daftar, deposit, atau masuk game?",
-  heroSubtitle: "Ikuti tutorial step-by-step di bawah ini. Semua dibuat singkat, jelas, dan gampang dipahami dari HP.",
-  logo: "assets/logo-placeholder.svg",
-  banner: "assets/banner-placeholder.svg",
-  video: "",
-  daftarLink: "#",
-  loginLink: "#",
-  adminLink: "https://cutt.ly/adminresmi",
-  guides: {
-    daftar: [
+  "version": "1.5.0",
+  "pin": "7788",
+  "brandName": "DUKUN138 GUIDE",
+  "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
+  "heroTitle": "Belum paham cara daftar, deposit, transfer saldo, atau withdraw?",
+  "heroSubtitle": "Ikuti tutorial singkat dari HP. Semua dibuat jelas, ringkas, dan gampang dipahami member baru.",
+  "logo": "assets/logo-placeholder.svg",
+  "banner": "assets/banner-placeholder.svg",
+  "daftarLink": "#",
+  "loginLink": "#",
+  "adminLink": "https://cutt.ly/adminresmi",
+  "guides": {
+    "daftar": [
       "Klik tombol Daftar Sekarang.",
       "Isi username, password, nomor WhatsApp, dan data rekening dengan benar.",
       "Pastikan semua data sesuai, lalu klik daftar.",
       "Setelah akun jadi, login menggunakan username dan password."
     ],
-    deposit: [
+    "deposit": [
       "Login ke akun member.",
       "Pilih menu Deposit.",
       "Pilih metode QRIS atau tujuan pembayaran yang tersedia.",
       "Transfer sesuai nominal yang diminta.",
       "Upload bukti transfer jika diminta, lalu tunggu saldo masuk."
     ],
-    transfer: [
+    "transfer": [
       "Login dan pastikan saldo utama sudah masuk.",
       "Pilih menu Transfer.",
       "Pilih dari Saldo Utama ke provider/game tujuan.",
       "Masukkan nominal transfer.",
       "Klik transfer, lalu buka game tujuan untuk mulai main."
     ],
-    promo: [
+    "withdraw": [
+      "Pastikan saldo sudah berada di saldo utama.",
+      "Kalau saldo masih ada di provider/game, transfer balik dulu ke saldo utama.",
+      "Pilih menu Withdraw.",
+      "Masukkan nominal penarikan sesuai ketentuan.",
+      "Pastikan data rekening benar dan sesuai akun.",
+      "Submit withdraw, lalu tunggu proses dari sistem/admin."
+    ],
+    "promo": [
       "Cek promo aktif sebelum deposit.",
-      "Baca promo aktif sebelum deposit.",
+      "Baca syarat dan ketentuan promo.",
       "Hubungi admin kalau ingin klaim bonus tertentu.",
       "Pastikan username benar saat klaim promo."
     ]
   },
-  faq: [
-    ["Kenapa saldo belum masuk?", "Pastikan nominal dan tujuan transfer benar. Kalau masih belum masuk, kirim bukti transfer ke admin."],
-    ["Bisa deposit pakai QRIS?", "Bisa, ikuti panduan Deposit QRIS di halaman ini."],
-    ["Kenapa saldo belum ada di game?", "Saldo biasanya masih di saldo utama. Transfer dulu ke provider/game tujuan."],
-    ["Kalau lupa password bagaimana?", "Hubungi admin dan siapkan username atau nomor WhatsApp terdaftar."]
+  "media": {
+    "daftar": {
+      "image": "assets/tutorial-daftar-placeholder.svg",
+      "video": ""
+    },
+    "deposit": {
+      "image": "assets/tutorial-deposit-placeholder.svg",
+      "video": ""
+    },
+    "transfer": {
+      "image": "assets/tutorial-transfer-placeholder.svg",
+      "video": ""
+    },
+    "withdraw": {
+      "image": "assets/tutorial-withdraw-placeholder.svg",
+      "video": ""
+    },
+    "promo": {
+      "image": "assets/tutorial-promo-placeholder.svg",
+      "video": ""
+    }
+  },
+  "faq": [
+    [
+      "Kenapa saldo belum masuk?",
+      "Pastikan nominal dan tujuan transfer benar. Kalau masih belum masuk, kirim bukti transfer ke admin."
+    ],
+    [
+      "Bisa deposit pakai QRIS?",
+      "Bisa, ikuti panduan Deposit QRIS di halaman ini."
+    ],
+    [
+      "Kenapa saldo belum ada di game?",
+      "Saldo biasanya masih di saldo utama. Transfer dulu ke provider/game tujuan."
+    ],
+    [
+      "Bagaimana cara withdraw?",
+      "Pastikan saldo ada di saldo utama, lalu masuk menu Withdraw dan ikuti langkah penarikan."
+    ],
+    [
+      "Withdraw pending harus bagaimana?",
+      "Cek data rekening dan hubungi admin dengan menyertakan username serta nominal withdraw."
+    ],
+    [
+      "Kalau lupa password bagaimana?",
+      "Hubungi admin dan siapkan username atau nomor WhatsApp terdaftar."
+    ]
   ]
 };

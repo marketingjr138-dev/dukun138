@@ -2,44 +2,46 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
-  <meta name="description" content="Panduan member: cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b1209" />
+  <meta name="description" content="Panduan member DUKUN138: cara daftar, deposit QRIS, transfer saldo game, withdraw, dan info promo." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Panduan Member" />
-  <meta property="og:description" content="Cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo member." />
+  <meta property="og:title" content="Panduan Member DUKUN138" />
+  <meta property="og:description" content="Tutorial cara daftar, deposit QRIS, transfer saldo game, withdraw, dan promo member." />
   <meta property="og:image" content="assets/preview-share.png" />
-  <meta property="og:site_name" content="Panduan Member" />
+  <meta property="og:site_name" content="Panduan Member DUKUN138" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Panduan Member" />
-  <meta name="twitter:description" content="Cara daftar, deposit QRIS, transfer saldo ke game tujuan, dan info promo member." />
+  <meta name="twitter:title" content="Panduan Member DUKUN138" />
+  <meta name="twitter:description" content="Tutorial cara daftar, deposit QRIS, transfer saldo game, withdraw, dan promo member." />
   <meta name="twitter:image" content="assets/preview-share.png" />
-  <title>Panduan Member</title>
+  <title>Panduan Member DUKUN138</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="mystic-bg" aria-hidden="true"></div>
   <div id="app">
-    <header class="hero">
-      <div class="topbar">
-        <div class="brand">
-          <img id="brandLogo" src="assets/logo-placeholder.svg" alt="Logo" />
-          <div>
-            <strong id="brandName">PANDUAN MEMBER</strong>
-            <span id="brandTagline">Daftar • Deposit QRIS • Transfer Saldo Game</span>
-          </div>
+    <header class="site-header">
+      <div class="brand">
+        <img id="brandLogo" src="assets/logo-placeholder.svg" alt="Logo" />
+        <div class="brand-text">
+          <strong id="brandName">DUKUN138 GUIDE</strong>
+          <span id="brandTagline">Daftar • Deposit QRIS • Transfer • Withdraw</span>
         </div>
-        <button id="openSettings" class="icon-btn private-admin-trigger" aria-label="Admin Access" title="Admin Access">•</button>
       </div>
+      <button id="openSettings" class="private-admin-trigger" aria-label="Admin Access" title="Admin Access">•</button>
+    </header>
 
+    <main>
       <section class="hero-card">
         <div class="hero-copy">
-          <p class="eyebrow">Panduan cepat untuk member baru</p>
-          <h1 id="heroTitle">Belum paham cara daftar, deposit, atau masuk game?</h1>
-          <p id="heroSubtitle">Ikuti tutorial step-by-step di bawah ini. Semua dibuat singkat, jelas, dan gampang dipahami dari HP.</p>
+          <p class="eyebrow">Panduan resmi member baru</p>
+          <h1 id="heroTitle">Belum paham cara daftar, deposit, transfer saldo, atau withdraw?</h1>
+          <p id="heroSubtitle">Ikuti tutorial singkat dari HP. Semua dibuat jelas, ringkas, dan gampang dipahami member baru.</p>
           <div class="cta-row">
             <a id="btnDaftar" class="btn primary" href="#" target="_blank" rel="noopener">Daftar Sekarang</a>
+            <a id="btnLogin" class="btn soft" href="#" target="_blank" rel="noopener">Login</a>
             <a id="btnAdmin" class="btn ghost" href="#" target="_blank" rel="noopener">Chat Admin</a>
           </div>
         </div>
@@ -47,37 +49,50 @@
           <img id="heroBanner" src="assets/banner-placeholder.svg" alt="Banner panduan" />
         </div>
       </section>
-    </header>
 
-    <main>
-      <section class="section">
+      <section class="section guide-section">
         <div class="section-head">
           <p class="eyebrow">Pilih panduan</p>
           <h2>Yang sering bikin member bingung</h2>
         </div>
-        <div class="tabs" role="tablist">
-          <button class="tab active" data-tab="daftar">Cara Daftar</button>
+        <div class="tabs" role="tablist" aria-label="Menu panduan member">
+          <button class="tab active" data-tab="daftar">Daftar</button>
           <button class="tab" data-tab="deposit">Deposit QRIS</button>
-          <button class="tab" data-tab="transfer">Transfer Saldo Game</button>
+          <button class="tab" data-tab="transfer">Transfer Game</button>
+          <button class="tab" data-tab="withdraw">Withdraw</button>
           <button class="tab" data-tab="promo">Promo</button>
         </div>
-
-        <div id="guideContent" class="guide-card"></div>
+        <article id="guideContent" class="guide-card"></article>
       </section>
 
-      <section class="section video-section">
+      <section class="section media-section">
         <div class="section-head">
-          <p class="eyebrow">Video tutorial</p>
-          <h2 id="videoTitle">Tonton panduan singkat</h2>
-          <p id="videoDesc">Kalau masih bingung, lihat video tutorial ini dari awal sampai akhir.</p>
+          <p class="eyebrow">Gambar & video HP</p>
+          <h2 id="mediaTitle">Tutorial format 9:16</h2>
+          <p id="mediaDesc">Gambar dan video dibuat portrait supaya nyaman dilihat dari HP member.</p>
         </div>
-        <div class="video-frame">
-          <video id="tutorialVideo" controls playsinline preload="metadata" poster="assets/video-poster-placeholder.svg">
-            <source src="" type="video/mp4" />
-            Browser kamu belum mendukung video.
-          </video>
-          <div id="videoEmpty" class="empty-video">Video belum disetting. Masuk Settings untuk isi link video / upload nanti.</div>
+        <div class="media-grid">
+          <div class="phone-frame image-frame">
+            <img id="tutorialImage" src="assets/tutorial-daftar-placeholder.svg" alt="Gambar tutorial" />
+            <div id="imageEmpty" class="media-empty">Gambar tutorial belum disetting.</div>
+          </div>
+          <div class="phone-frame video-frame">
+            <video id="tutorialVideo" controls playsinline preload="metadata" poster="assets/video-poster-placeholder.svg">
+              <source src="" type="video/mp4" />
+              Browser kamu belum mendukung video.
+            </video>
+            <div id="videoEmpty" class="media-empty">Video tutorial belum disetting.</div>
+          </div>
         </div>
+      </section>
+
+      <section class="section promo-strip">
+        <div>
+          <p class="eyebrow">Butuh bantuan?</p>
+          <h2>Masih bingung? Langsung tanya admin.</h2>
+          <p>Gunakan tombol chat admin kalau saldo belum masuk, transfer game gagal, atau withdraw pending.</p>
+        </div>
+        <a id="btnAdminBottom" class="btn primary" href="#" target="_blank" rel="noopener">Chat Admin</a>
       </section>
 
       <section class="section faq-section">
@@ -91,15 +106,16 @@
 
     <nav class="bottom-nav">
       <a href="#app">Home</a>
-      <a href="#guideContent">Tutorial</a>
-      <a id="navLogin" href="#" target="_blank" rel="noopener">Login</a>
+      <a href="#daftar">Daftar</a>
+      <a href="#deposit">Deposit</a>
+      <a href="#withdraw">WD</a>
       <a id="navAdmin" href="#" target="_blank" rel="noopener">Admin</a>
     </nav>
   </div>
 
   <dialog id="pinDialog" class="modal">
     <form method="dialog" class="modal-card small">
-      <h3>Akses Settings</h3>
+      <h3>Akses Admin</h3>
       <p class="muted">Masukkan PIN owner untuk edit konten website.</p>
       <input id="pinInput" type="password" inputmode="numeric" placeholder="PIN owner" />
       <div class="modal-actions">
@@ -116,7 +132,7 @@
       <div class="modal-title">
         <div>
           <h3>Owner Settings</h3>
-          <p class="muted">Dashboard admin private. Tanpa database. Data tersimpan lokal di device ini. Export config untuk backup/pakai ulang.</p>
+          <p class="muted">Edit lokal untuk preview, lalu Push ke Google Sheet agar semua member ikut update.</p>
         </div>
         <button class="icon-btn" value="cancel">✕</button>
       </div>
@@ -131,7 +147,6 @@
         <label>Link Chat Admin / Cutt.ly <input id="setAdmin" placeholder="https://cutt.ly/adminresmi atau https://wa.me/62..." /></label>
         <label>Link Logo <input id="setLogo" placeholder="assets/logo.png atau URL gambar" /></label>
         <label>Link Banner <input id="setBanner" placeholder="assets/banner.jpg atau URL gambar" /></label>
-        <label>Link Video MP4 <input id="setVideo" placeholder="assets/tutorial.mp4 atau URL mp4" /></label>
         <label>Google Apps Script API URL <input id="setGasApi" placeholder="https://script.google.com/macros/s/xxx/exec" /></label>
         <label>PIN Settings <input id="setPin" type="password" inputmode="numeric" placeholder="Ganti PIN" /></label>
       </div>
@@ -141,8 +156,24 @@
         <label>Cara Daftar <textarea id="setDaftarSteps"></textarea></label>
         <label>Deposit QRIS <textarea id="setDepositSteps"></textarea></label>
         <label>Transfer Saldo Game <textarea id="setTransferSteps"></textarea></label>
+        <label>Cara Withdraw <textarea id="setWithdrawSteps"></textarea></label>
         <label>Promo <textarea id="setPromoSteps"></textarea></label>
         <label>FAQ <textarea id="setFaq"></textarea></label>
+      </div>
+
+      <h4>Media Tutorial 9:16</h4>
+      <p class="muted">Isi path file lokal seperti <b>assets/daftar.mp4</b> atau URL langsung file gambar/video. Bukan link halaman YouTube.</p>
+      <div class="form-grid">
+        <label>Gambar Daftar 9:16 <input id="setImgDaftar" placeholder="assets/tutorial-daftar.jpg" /></label>
+        <label>Video Daftar 9:16 MP4 <input id="setVidDaftar" placeholder="assets/tutorial-daftar.mp4" /></label>
+        <label>Gambar Deposit 9:16 <input id="setImgDeposit" placeholder="assets/tutorial-deposit.jpg" /></label>
+        <label>Video Deposit 9:16 MP4 <input id="setVidDeposit" placeholder="assets/tutorial-deposit.mp4" /></label>
+        <label>Gambar Transfer 9:16 <input id="setImgTransfer" placeholder="assets/tutorial-transfer.jpg" /></label>
+        <label>Video Transfer 9:16 MP4 <input id="setVidTransfer" placeholder="assets/tutorial-transfer.mp4" /></label>
+        <label>Gambar Withdraw 9:16 <input id="setImgWithdraw" placeholder="assets/tutorial-withdraw.jpg" /></label>
+        <label>Video Withdraw 9:16 MP4 <input id="setVidWithdraw" placeholder="assets/tutorial-withdraw.mp4" /></label>
+        <label>Gambar Promo 9:16 <input id="setImgPromo" placeholder="assets/tutorial-promo.jpg" /></label>
+        <label>Video Promo 9:16 MP4 <input id="setVidPromo" placeholder="assets/tutorial-promo.mp4" /></label>
       </div>
 
       <p id="pullStatus" class="pull-status"></p>
@@ -156,7 +187,6 @@
       </div>
     </form>
   </dialog>
-
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
