@@ -34,8 +34,8 @@ async function pushConfigToGas(){
 function render(){
   $("brandName").textContent=config.brandName; $("brandTagline").textContent=config.tagline; $("heroTitle").textContent=config.heroTitle; $("heroSubtitle").textContent=config.heroSubtitle;
   $("brandLogo").src=config.logo||"assets/logo-placeholder.svg"; $("heroBanner").src=config.banner||"assets/banner-placeholder.svg";
-  $("btnDaftar").href=safeLink(config.daftarLink); $("btnLogin").href=safeLink(config.loginLink); $("btnAdmin").href=safeLink(config.adminLink); $("btnAdminBottom").href=safeLink(config.adminLink); $("navAdmin").href=safeLink(config.adminLink);
-  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===activeTab)); renderGuide(); renderMedia(); renderFaq();
+  $("btnDaftar").href=safeLink(config.daftarLink); $("btnLogin").href=safeLink(config.loginLink); $("btnAdmin").href=safeLink(config.adminLink); $("btnAdminBottom").href=safeLink(config.adminLink);
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===activeTab)); document.querySelectorAll("[data-nav-tab]").forEach(b=>b.classList.toggle("active",b.dataset.navTab===activeTab)); renderGuide(); renderMedia(); renderFaq();
 }
 function renderGuide(){
  const labels={daftar:"Cara Daftar",deposit:"Deposit QRIS",transfer:"Transfer Saldo ke Game",withdraw:"Cara Withdraw",promo:"Info Promo"};
@@ -54,7 +54,13 @@ function renderFaq(){$("faqList").innerHTML=(config.faq||[]).map(([q,a])=>`<deta
 function escapeHtml(text){return String(text||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>setActiveTab(btn.dataset.tab)));
 function setActiveTab(tab){if(!allowedTabs.includes(tab))tab="daftar";activeTab=tab;localStorage.setItem(ACTIVE_TAB_KEY,activeTab);if(location.hash.replace("#","")!==activeTab)history.replaceState(null,"",`#${activeTab}`);render();}
-$("openSettings").addEventListener("click",()=>{$("pinInput").value="";$("pinError").textContent="";$("pinAlertInfo").textContent=getPinAlertMessage();$("pinDialog").showModal();});
+function openAdminPin(){
+  $("pinInput").value="";
+  $("pinError").textContent="";
+  $("pinAlertInfo").textContent=getPinAlertMessage();
+  $("pinDialog").showModal();
+}
+$("openSettings").addEventListener("click", openAdminPin);
 $("submitPin").addEventListener("click",()=>{if($("pinInput").value===config.pin){$("pinDialog").close();clearPinAttempts();fillSettings();$("settingsDialog").showModal();}else{recordFailedPinAttempt();$("pinError").textContent="PIN salah. Akses ditolak.";$("pinAlertInfo").textContent=getPinAlertMessage();}});
 function recordFailedPinAttempt(){const attempts=JSON.parse(localStorage.getItem("slotGuideFailedPinAttempts")||"[]");attempts.push({time:new Date().toISOString()});localStorage.setItem("slotGuideFailedPinAttempts",JSON.stringify(attempts.slice(-20)));}
 function clearPinAttempts(){localStorage.removeItem("slotGuideFailedPinAttempts");}
@@ -73,6 +79,19 @@ $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGas
 $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value?.trim()||getGasApiUrl());await pushConfigToGas();});
 $("resetSettings").addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY);config=loadConfig();render();$("settingsDialog").close();}});
 window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#","");if(allowedTabs.includes(next)){activeTab=next;localStorage.setItem(ACTIVE_TAB_KEY,activeTab);render();}});
+
+document.querySelectorAll("[data-nav-tab]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    setActiveTab(btn.dataset.navTab);
+    document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+});
+document.querySelector('[data-nav="home"]')?.addEventListener("click",()=>{
+  history.replaceState(null,"","#app");
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+$("navOwner")?.addEventListener("click", openAdminPin);
+
 function preventZoom(){document.body.classList.add("no-zoom");let lastTouchEnd=0;document.addEventListener("touchstart",e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});document.addEventListener("touchend",e=>{const now=Date.now();if(now-lastTouchEnd<=300)e.preventDefault();lastTouchEnd=now;},{passive:false});document.addEventListener("gesturestart",e=>e.preventDefault());}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 preventZoom();render();pullRemoteConfig();

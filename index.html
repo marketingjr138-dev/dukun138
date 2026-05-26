@@ -30,7 +30,7 @@
           <span id="brandTagline">Daftar • Deposit QRIS • Transfer • Withdraw</span>
         </div>
       </div>
-      <button id="openSettings" class="private-admin-trigger" aria-label="Admin Access" title="Admin Access">•</button>
+      <button id="openSettings" class="private-admin-trigger" aria-label="Admin Access" title="Admin Access">Admin</button>
     </header>
 
     <main>
@@ -104,12 +104,14 @@
       </section>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="#app">Home</a>
-      <a href="#daftar">Daftar</a>
-      <a href="#deposit">Deposit</a>
-      <a href="#withdraw">WD</a>
-      <a id="navAdmin" href="#" target="_blank" rel="noopener">Admin</a>
+    <nav class="bottom-nav" aria-label="Navigasi cepat">
+      <button type="button" data-nav="home">Home</button>
+      <button type="button" data-nav-tab="daftar">Daftar</button>
+      <button type="button" data-nav-tab="deposit">Deposit</button>
+      <button type="button" data-nav-tab="transfer">Transfer</button>
+      <button type="button" data-nav-tab="withdraw">WD</button>
+      <button type="button" data-nav-tab="promo">Promo</button>
+      <button type="button" id="navOwner">Admin</button>
     </nav>
   </div>
 

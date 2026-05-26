@@ -40,3 +40,9 @@ Cara:
 Isi media di Owner Settings atau Google Sheet field `media`.
 
 Gunakan video direct `.mp4`, bukan link halaman YouTube.
+
+
+## v1.5.1
+- Fix bottom navigation supaya tombol Home/Daftar/Deposit/Transfer/WD/Promo berfungsi.
+- Tombol Admin bawah sekarang membuka PIN Owner Settings, bukan link chat admin.
+- Tombol admin header dibuat sedikit lebih terlihat tapi tetap kecil/private.
