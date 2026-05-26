@@ -147,10 +147,12 @@
         <label>Link Daftar <input id="setDaftar" placeholder="https://..." /></label>
         <label>Link Login <input id="setLogin" placeholder="https://..." /></label>
         <label>Link Chat Admin / Cutt.ly <input id="setAdmin" placeholder="https://cutt.ly/adminresmi atau https://wa.me/62..." /></label>
-        <label>Link Logo <input id="setLogo" placeholder="assets/logo.png atau URL gambar" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setLogo" /></label>
-        <label>Link Banner <input id="setBanner" placeholder="assets/banner.jpg atau URL gambar" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setBanner" /></label>
+        <label>Logo <input id="setLogo" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setLogo" /><button class="btn ghost clear-media" type="button" data-clear-target="setLogo">Hapus Logo</button></label>
+        <label>Banner <input id="setBanner" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setBanner" /><button class="btn ghost clear-media" type="button" data-clear-target="setBanner">Hapus Banner</button></label>
         <label>Google Apps Script API URL <input id="setGasApi" placeholder="https://script.google.com/macros/s/xxx/exec" /></label>
-        <label>PIN Settings <input id="setPin" type="password" inputmode="numeric" placeholder="Ganti PIN" /></label>
+        <label>PIN Lama <input id="setPinOld" type="password" inputmode="numeric" placeholder="Wajib kalau mau ganti PIN" /></label>
+        <label>PIN Baru <input id="setPinNew" type="password" inputmode="numeric" placeholder="Kosongkan kalau tidak diganti" /></label>
+        <label>Ulangi PIN Baru <input id="setPinConfirm" type="password" inputmode="numeric" placeholder="Ulangi PIN baru" /></label>
       </div>
 
       <h4>Isi Panduan</h4>
@@ -164,21 +166,21 @@
       </div>
 
       <h4>Media Tutorial 9:16</h4>
-      <p class="muted">Isi path file lokal seperti <b>assets/daftar.mp4</b> atau URL langsung file gambar/video. Bukan link halaman YouTube.</p>
+      <p class="muted">Upload dari galeri jadi mode utama. Link teknis disimpan otomatis di belakang layar. Input manual tidak wajib.</p>
       <div class="form-grid">
-        <label>Gambar Daftar 9:16 <input id="setImgDaftar" placeholder="assets/tutorial-daftar.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDaftar" /></label>
-        <label>Video Daftar 9:16 MP4 <input id="setVidDaftar" placeholder="assets/tutorial-daftar.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDaftar" /></label>
-        <label>Gambar Deposit 9:16 <input id="setImgDeposit" placeholder="assets/tutorial-deposit.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDeposit" /></label>
-        <label>Video Deposit 9:16 MP4 <input id="setVidDeposit" placeholder="assets/tutorial-deposit.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDeposit" /></label>
-        <label>Gambar Transfer 9:16 <input id="setImgTransfer" placeholder="assets/tutorial-transfer.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgTransfer" /></label>
-        <label>Video Transfer 9:16 MP4 <input id="setVidTransfer" placeholder="assets/tutorial-transfer.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidTransfer" /></label>
-        <label>Gambar Withdraw 9:16 <input id="setImgWithdraw" placeholder="assets/tutorial-withdraw.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgWithdraw" /></label>
-        <label>Video Withdraw 9:16 MP4 <input id="setVidWithdraw" placeholder="assets/tutorial-withdraw.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidWithdraw" /></label>
-        <label>Gambar Promo 9:16 <input id="setImgPromo" placeholder="assets/tutorial-promo.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgPromo" /></label>
-        <label>Video Promo 9:16 MP4 <input id="setVidPromo" placeholder="assets/tutorial-promo.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidPromo" /></label>
+        <label>Gambar Daftar 9:16 <input id="setImgDaftar" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDaftar" /><button class="btn ghost clear-media" type="button" data-clear-target="setImgDaftar">Hapus Gambar Daftar</button></label>
+        <label>Video Daftar 9:16 MP4 <input id="setVidDaftar" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDaftar" /><button class="btn ghost clear-media" type="button" data-clear-target="setVidDaftar">Hapus Video Daftar</button></label>
+        <label>Gambar Deposit 9:16 <input id="setImgDeposit" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDeposit" /><button class="btn ghost clear-media" type="button" data-clear-target="setImgDeposit">Hapus Gambar Deposit</button></label>
+        <label>Video Deposit 9:16 MP4 <input id="setVidDeposit" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDeposit" /><button class="btn ghost clear-media" type="button" data-clear-target="setVidDeposit">Hapus Video Deposit</button></label>
+        <label>Gambar Transfer 9:16 <input id="setImgTransfer" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgTransfer" /><button class="btn ghost clear-media" type="button" data-clear-target="setImgTransfer">Hapus Gambar Transfer</button></label>
+        <label>Video Transfer 9:16 MP4 <input id="setVidTransfer" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidTransfer" /><button class="btn ghost clear-media" type="button" data-clear-target="setVidTransfer">Hapus Video Transfer</button></label>
+        <label>Gambar Withdraw 9:16 <input id="setImgWithdraw" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgWithdraw" /><button class="btn ghost clear-media" type="button" data-clear-target="setImgWithdraw">Hapus Gambar Withdraw</button></label>
+        <label>Video Withdraw 9:16 MP4 <input id="setVidWithdraw" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidWithdraw" /><button class="btn ghost clear-media" type="button" data-clear-target="setVidWithdraw">Hapus Video Withdraw</button></label>
+        <label>Gambar Promo 9:16 <input id="setImgPromo" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgPromo" /><button class="btn ghost clear-media" type="button" data-clear-target="setImgPromo">Hapus Gambar Promo</button></label>
+        <label>Video Promo 9:16 MP4 <input id="setVidPromo" placeholder="Kosong / otomatis setelah upload" readonly /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidPromo" /><button class="btn ghost clear-media" type="button" data-clear-target="setVidPromo">Hapus Video Promo</button></label>
       </div>
 
-      <p class="muted upload-note">Upload dari galeri butuh Google Apps Script API URL. File akan disimpan ke Google Drive, lalu link otomatis masuk ke field.</p>
+      <p class="muted upload-note">Upload dari galeri butuh Google Apps Script API URL. File masuk ke Google Drive, link tersimpan otomatis. Setelah upload, klik Push ke Google Sheet.</p>
       <p id="uploadStatus" class="pull-status"></p>
       <p id="pullStatus" class="pull-status"></p>
       <div class="modal-actions wrap">

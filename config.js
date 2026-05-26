@@ -4,14 +4,14 @@ window.GAS_API_URL = ""; // isi dengan URL Web App Google Apps Script untuk sync
 window.CONFIG_SOURCE = "auto"; // auto | gas | json
 
 window.DEFAULT_CONFIG = {
-  "version": "1.6.1",
+  "version": "1.7.0",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
   "heroTitle": "Belum paham cara daftar, deposit, transfer saldo, atau withdraw?",
   "heroSubtitle": "Ikuti tutorial singkat dari HP. Semua dibuat jelas, ringkas, dan gampang dipahami member baru.",
-  "logo": "assets/logo-placeholder.svg",
-  "banner": "assets/banner-placeholder.svg",
+  "logo": "",
+  "banner": "",
   "daftarLink": "#",
   "loginLink": "#",
   "adminLink": "https://cutt.ly/adminresmi",
@@ -53,23 +53,23 @@ window.DEFAULT_CONFIG = {
   },
   "media": {
     "daftar": {
-      "image": "assets/tutorial-daftar-placeholder.svg",
+      "image": "",
       "video": ""
     },
     "deposit": {
-      "image": "assets/tutorial-deposit-placeholder.svg",
+      "image": "",
       "video": ""
     },
     "transfer": {
-      "image": "assets/tutorial-transfer-placeholder.svg",
+      "image": "",
       "video": ""
     },
     "withdraw": {
-      "image": "assets/tutorial-withdraw-placeholder.svg",
+      "image": "",
       "video": ""
     },
     "promo": {
-      "image": "assets/tutorial-promo-placeholder.svg",
+      "image": "",
       "video": ""
     }
   },

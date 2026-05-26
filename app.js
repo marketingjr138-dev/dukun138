@@ -301,7 +301,7 @@ function fillSettings(){
   setValue("setLogo", config.logo);
   setValue("setBanner", config.banner);
   setValue("setGasApi", getGasApiUrl());
-  setValue("setPin", "");
+  setValue("setPinOld", ""); setValue("setPinNew", ""); setValue("setPinConfirm", "");
 
   setValue("setDaftarSteps", ((config.guides || {}).daftar || []).join("\n"));
   setValue("setDepositSteps", ((config.guides || {}).deposit || []).join("\n"));
@@ -339,6 +339,17 @@ function parseFaq(text){
   }).filter(([q,a]) => q && a);
 }
 
+function getNextPinOrThrow(){
+  const oldPin = $("setPinOld")?.value.trim() || "";
+  const newPin = $("setPinNew")?.value.trim() || "";
+  const confirmPin = $("setPinConfirm")?.value.trim() || "";
+  if(!oldPin && !newPin && !confirmPin) return config.pin;
+  if(oldPin !== config.pin) throw new Error("PIN lama salah. PIN tidak diganti.");
+  if(!newPin || newPin.length < 4) throw new Error("PIN baru minimal 4 digit/karakter.");
+  if(newPin !== confirmPin) throw new Error("Ulangi PIN baru belum sama.");
+  return newPin;
+}
+
 function collectSettings(){
   return {
     ...config,
@@ -351,7 +362,7 @@ function collectSettings(){
     adminLink: $("setAdmin")?.value.trim() || "",
     logo: $("setLogo")?.value.trim() || "assets/logo-placeholder.svg",
     banner: $("setBanner")?.value.trim() || "assets/banner-placeholder.svg",
-    pin: $("setPin")?.value.trim() || config.pin,
+    pin: getNextPinOrThrow(),
     guides: {
       daftar: lines($("setDaftarSteps")?.value),
       deposit: lines($("setDepositSteps")?.value),
@@ -487,6 +498,21 @@ function bindEvents(){
       return;
     }
 
+    const clearBtn = e.target.closest(".clear-media[data-clear-target]");
+    if(clearBtn){
+      e.preventDefault();
+      const target = clearBtn.dataset.clearTarget;
+      const input = $(target);
+      if(input) input.value = "";
+      try{
+        saveConfig(collectSettings());
+        setUploadStatus("Media berhasil dikosongkan. Klik Push ke Google Sheet agar semua member ikut update.");
+      }catch(err){
+        alert(err.message || "Gagal mengosongkan media.");
+      }
+      return;
+    }
+
     const homeBtn = e.target.closest('[data-nav="home"]');
     if(homeBtn){
       e.preventDefault();
@@ -510,10 +536,14 @@ function bindEvents(){
   });
 
   $("saveSettings")?.addEventListener("click", () => {
+  try{
     setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
     saveConfig(collectSettings());
     $("settingsDialog")?.close();
-  });
+  }catch(err){
+    alert(err.message || "Setting belum valid.");
+  }
+});
 
   $("pullRemoteConfig")?.addEventListener("click", async () => {
     setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
@@ -542,7 +572,7 @@ function bindEvents(){
     const blob = new Blob([JSON.stringify(clean, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "dukun138-guide-config-v1.6.json";
+    a.download = "dukun138-guide-config-v1.7.json";
     a.click();
     URL.revokeObjectURL(a.href);
   });
