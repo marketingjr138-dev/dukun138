@@ -1,0 +1,19 @@
+PANDUAN CEPAT DEPLOY v1.6
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Cloudflare Pages:
+   - Framework preset: None
+   - Build command: kosong
+   - Build output directory: .
+   - Root directory: kosong
+3. Apps Script:
+   - Pakai file google-apps-script-v1.6.gs
+   - Paste ke Apps Script lama
+   - Save
+   - Run setupSheet() jika Sheet masih baru
+   - Deploy > Manage deployments > Edit > New version > Deploy
+4. Buka PWA > Owner Settings:
+   - Isi Google Apps Script API URL
+   - Upload file dari galeri
+   - Setelah upload, klik Push ke Google Sheet
+5. Member cukup refresh/buka ulang PWA.

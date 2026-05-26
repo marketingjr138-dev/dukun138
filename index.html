@@ -147,8 +147,8 @@
         <label>Link Daftar <input id="setDaftar" placeholder="https://..." /></label>
         <label>Link Login <input id="setLogin" placeholder="https://..." /></label>
         <label>Link Chat Admin / Cutt.ly <input id="setAdmin" placeholder="https://cutt.ly/adminresmi atau https://wa.me/62..." /></label>
-        <label>Link Logo <input id="setLogo" placeholder="assets/logo.png atau URL gambar" /></label>
-        <label>Link Banner <input id="setBanner" placeholder="assets/banner.jpg atau URL gambar" /></label>
+        <label>Link Logo <input id="setLogo" placeholder="assets/logo.png atau URL gambar" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setLogo" /></label>
+        <label>Link Banner <input id="setBanner" placeholder="assets/banner.jpg atau URL gambar" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setBanner" /></label>
         <label>Google Apps Script API URL <input id="setGasApi" placeholder="https://script.google.com/macros/s/xxx/exec" /></label>
         <label>PIN Settings <input id="setPin" type="password" inputmode="numeric" placeholder="Ganti PIN" /></label>
       </div>
@@ -166,18 +166,20 @@
       <h4>Media Tutorial 9:16</h4>
       <p class="muted">Isi path file lokal seperti <b>assets/daftar.mp4</b> atau URL langsung file gambar/video. Bukan link halaman YouTube.</p>
       <div class="form-grid">
-        <label>Gambar Daftar 9:16 <input id="setImgDaftar" placeholder="assets/tutorial-daftar.jpg" /></label>
-        <label>Video Daftar 9:16 MP4 <input id="setVidDaftar" placeholder="assets/tutorial-daftar.mp4" /></label>
-        <label>Gambar Deposit 9:16 <input id="setImgDeposit" placeholder="assets/tutorial-deposit.jpg" /></label>
-        <label>Video Deposit 9:16 MP4 <input id="setVidDeposit" placeholder="assets/tutorial-deposit.mp4" /></label>
-        <label>Gambar Transfer 9:16 <input id="setImgTransfer" placeholder="assets/tutorial-transfer.jpg" /></label>
-        <label>Video Transfer 9:16 MP4 <input id="setVidTransfer" placeholder="assets/tutorial-transfer.mp4" /></label>
-        <label>Gambar Withdraw 9:16 <input id="setImgWithdraw" placeholder="assets/tutorial-withdraw.jpg" /></label>
-        <label>Video Withdraw 9:16 MP4 <input id="setVidWithdraw" placeholder="assets/tutorial-withdraw.mp4" /></label>
-        <label>Gambar Promo 9:16 <input id="setImgPromo" placeholder="assets/tutorial-promo.jpg" /></label>
-        <label>Video Promo 9:16 MP4 <input id="setVidPromo" placeholder="assets/tutorial-promo.mp4" /></label>
+        <label>Gambar Daftar 9:16 <input id="setImgDaftar" placeholder="assets/tutorial-daftar.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDaftar" /></label>
+        <label>Video Daftar 9:16 MP4 <input id="setVidDaftar" placeholder="assets/tutorial-daftar.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDaftar" /></label>
+        <label>Gambar Deposit 9:16 <input id="setImgDeposit" placeholder="assets/tutorial-deposit.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgDeposit" /></label>
+        <label>Video Deposit 9:16 MP4 <input id="setVidDeposit" placeholder="assets/tutorial-deposit.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidDeposit" /></label>
+        <label>Gambar Transfer 9:16 <input id="setImgTransfer" placeholder="assets/tutorial-transfer.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgTransfer" /></label>
+        <label>Video Transfer 9:16 MP4 <input id="setVidTransfer" placeholder="assets/tutorial-transfer.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidTransfer" /></label>
+        <label>Gambar Withdraw 9:16 <input id="setImgWithdraw" placeholder="assets/tutorial-withdraw.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgWithdraw" /></label>
+        <label>Video Withdraw 9:16 MP4 <input id="setVidWithdraw" placeholder="assets/tutorial-withdraw.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidWithdraw" /></label>
+        <label>Gambar Promo 9:16 <input id="setImgPromo" placeholder="assets/tutorial-promo.jpg" /><input class="upload-input" type="file" accept="image/*" data-upload-target="setImgPromo" /></label>
+        <label>Video Promo 9:16 MP4 <input id="setVidPromo" placeholder="assets/tutorial-promo.mp4" /><input class="upload-input" type="file" accept="video/mp4,video/*" data-upload-target="setVidPromo" /></label>
       </div>
 
+      <p class="muted upload-note">Upload dari galeri butuh Google Apps Script API URL. File akan disimpan ke Google Drive, lalu link otomatis masuk ke field.</p>
+      <p id="uploadStatus" class="pull-status"></p>
       <p id="pullStatus" class="pull-status"></p>
       <div class="modal-actions wrap">
         <button id="saveSettings" class="btn primary" type="button">Simpan Lokal</button>

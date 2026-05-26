@@ -370,8 +370,108 @@ function collectSettings(){
   };
 }
 
+
+function setUploadStatus(message){
+  const el = $("uploadStatus");
+  if(el) el.textContent = message || "";
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const base64 = result.includes(",") ? result.split(",")[1] : result;
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function getUploadFolderName(targetId){
+  const map = {
+    setLogo: "logo",
+    setBanner: "banner",
+    setImgDaftar: "daftar-image",
+    setVidDaftar: "daftar-video",
+    setImgDeposit: "deposit-image",
+    setVidDeposit: "deposit-video",
+    setImgTransfer: "transfer-image",
+    setVidTransfer: "transfer-video",
+    setImgWithdraw: "withdraw-image",
+    setVidWithdraw: "withdraw-video",
+    setImgPromo: "promo-image",
+    setVidPromo: "promo-video"
+  };
+  return map[targetId] || "media";
+}
+
+async function uploadMediaFile(file, targetId){
+  const gasUrl = getGasApiUrl();
+  if(!gasUrl){
+    alert("Isi dulu Google Apps Script API URL sebelum upload file.");
+    return;
+  }
+  if(!file || !targetId) return;
+
+  const isVideo = file.type.startsWith("video/");
+  const maxSize = isVideo ? 30 * 1024 * 1024 : 5 * 1024 * 1024;
+  if(file.size > maxSize){
+    alert(isVideo ? "Video terlalu besar. Usahakan maksimal 30MB." : "Gambar terlalu besar. Usahakan maksimal 5MB.");
+    return;
+  }
+
+  try{
+    setUploadStatus(`Mengupload ${file.name}... jangan tutup halaman.`);
+    const base64 = await fileToBase64(file);
+    const res = await fetch(gasUrl, {
+      method: "POST",
+      headers: {"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify({
+        action: "uploadFile",
+        fileName: file.name,
+        mimeType: file.type || "application/octet-stream",
+        folderTag: getUploadFolderName(targetId),
+        base64
+      })
+    });
+    const payload = await res.json();
+    if(!payload.ok) throw new Error(payload.error || "Upload gagal");
+
+    const input = $(targetId);
+    if(input) input.value = payload.url;
+
+    setUploadStatus(`Upload berhasil: ${file.name}. Link sudah masuk ke field.`);
+    saveConfig(collectSettings());
+    alert("Upload berhasil. Jangan lupa Push ke Google Sheet agar semua member ikut update.");
+  }catch(err){
+    console.error(err);
+    setUploadStatus("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");
+    alert("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");
+  }
+}
+
 function bindEvents(){
+
+  document.querySelectorAll(".upload-input").forEach(input => {
+    input.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      await uploadMediaFile(file, e.target.dataset.uploadTarget);
+      e.target.value = "";
+    });
+  });
+
   document.addEventListener("click", (e) => {
+    const guideTab = e.target.closest(".tab[data-tab]");
+    if(guideTab){
+      e.preventDefault();
+      setActiveTab(guideTab.dataset.tab);
+      document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth", block:"start"});
+      return;
+    }
+
     const adminBtn = e.target.closest("[data-open-admin]");
     if(adminBtn){
       e.preventDefault();
@@ -442,7 +542,7 @@ function bindEvents(){
     const blob = new Blob([JSON.stringify(clean, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "dukun138-guide-config-v1.5.2.json";
+    a.download = "dukun138-guide-config-v1.6.json";
     a.click();
     URL.revokeObjectURL(a.href);
   });

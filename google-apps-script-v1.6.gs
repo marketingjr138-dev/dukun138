@@ -1,11 +1,11 @@
 /**
- * DUKUN138 GUIDE PWA v1.5 - Google Apps Script Sync
+ * DUKUN138 GUIDE PWA v1.6 - Google Apps Script Sync
  * Google Sheet sebagai master konten ringan untuk PWA tutorial member.
  */
 const SHEET_NAME = 'CONFIG';
 const LOG_SHEET_NAME = 'LOGS';
 const DEFAULT_CONFIG = {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
@@ -130,9 +130,15 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse((e.postData && e.postData.contents) || '{}');
+    if (body.action === 'uploadFile') {
+      const uploaded = uploadFileToDrive(body);
+      logAction('uploadFile', 'ok', uploaded.name || 'uploaded');
+      return jsonResponse({ ok: true, file: uploaded, url: uploaded.url });
+    }
+
     if (body.action === 'saveConfig') {
       saveConfigToSheet(body.config || {});
-      logAction('saveConfig', 'ok', 'Config updated from PWA v1.5');
+      logAction('saveConfig', 'ok', 'Config updated from PWA v1.6');
       return jsonResponse({ ok: true, message: 'Config saved' });
     }
     return jsonResponse({ ok: false, error: 'Unknown action' });
@@ -190,7 +196,7 @@ function saveConfigToSheet(config) {
 
 function configToRows(config) {
   return [
-    ['version', config.version || '1.5.0', 'versi config'],
+    ['version', config.version || '1.6.0', 'versi config'],
     ['pin', config.pin || '7788', 'PIN admin PWA'],
     ['brandName', config.brandName || '', 'nama brand'],
     ['tagline', config.tagline || '', 'tagline kecil'],
@@ -205,6 +211,48 @@ function configToRows(config) {
     ['media', JSON.stringify(config.media || DEFAULT_CONFIG.media), 'JSON media 9:16: image/video per menu. Gunakan URL MP4 direct, bukan YouTube page.'],
     ['faq', JSON.stringify(config.faq || DEFAULT_CONFIG.faq), 'JSON FAQ']
   ];
+}
+
+
+function uploadFileToDrive(body) {
+  if (!body || !body.base64) throw new Error('No file data');
+  const folder = getOrCreateMediaFolder_(body.folderTag || 'media');
+  const bytes = Utilities.base64Decode(body.base64);
+  const safeName = sanitizeFileName_((body.fileName || 'upload-file').toString());
+  const mimeType = body.mimeType || 'application/octet-stream';
+  const blob = Utilities.newBlob(bytes, mimeType, safeName);
+  const file = folder.createFile(blob);
+
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (err) {}
+
+  const id = file.getId();
+  const directUrl = 'https://drive.google.com/uc?export=download&id=' + id;
+  return {
+    id: id,
+    name: file.getName(),
+    mimeType: mimeType,
+    url: directUrl,
+    viewUrl: file.getUrl()
+  };
+}
+
+function getOrCreateMediaFolder_(tag) {
+  const rootName = 'DUKUN138_GUIDE_MEDIA';
+  const rootFolders = DriveApp.getFoldersByName(rootName);
+  const root = rootFolders.hasNext() ? rootFolders.next() : DriveApp.createFolder(rootName);
+
+  const cleanTag = sanitizeFileName_(tag || 'media');
+  const subFolders = root.getFoldersByName(cleanTag);
+  return subFolders.hasNext() ? subFolders.next() : root.createFolder(cleanTag);
+}
+
+function sanitizeFileName_(name) {
+  return String(name || 'file')
+    .replace(/[\\/:*?"<>|#%{}~&]/g, '-')
+    .replace(/\s+/g, '-')
+    .slice(0, 120);
 }
 
 function logAction(action, status, detail) {

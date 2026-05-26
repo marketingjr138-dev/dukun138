@@ -53,3 +53,20 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Bottom nav memakai event delegation.
 - Tombol Admin header dan bottom nav membuka PIN Owner Settings.
 - CTA Daftar/Login/Chat tetap direct link dari config/settings.
+
+
+## v1.6 Media Upload dari HP
+- Owner Settings sekarang punya input upload file dari galeri untuk logo, banner, gambar tutorial, dan video tutorial.
+- File diupload ke Google Drive lewat Apps Script.
+- Link Drive otomatis masuk ke field media.
+- Setelah upload, klik `Push ke Google Sheet` agar semua member ikut update.
+- Batas saran: gambar maksimal 5MB, video maksimal 30MB.
+- Gunakan file video MP4 portrait 9:16 agar paling stabil.
+- Update Apps Script memakai file `google-apps-script-v1.6.gs`.
+
+
+## v1.6.1
+- Fix tombol Pilih Panduan bagian atas agar bisa diklik langsung.
+- Tab Daftar/Deposit/Transfer/WD/Promo sekarang memakai event delegation yang lebih aman.
+- Rapihin spacing teks langkah agar tidak terbaca menempel seperti `Langkah 1Cek`.
+- Cache PWA dinaikkan agar update lebih mudah kebaca.
