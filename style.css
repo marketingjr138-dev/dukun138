@@ -284,3 +284,20 @@ input[readonly]{
 .video-frame video{
   width:100%;
 }
+
+
+/* v1.8.2 Hide Panduan Member banner in hero */
+.hero-banner,
+.banner-card,
+.hero-media,
+.hero-visual,
+.hero-preview,
+#heroBanner{
+  display:none!important;
+}
+.hero-card{
+  padding-bottom:28px;
+}
+.hero-actions{
+  margin-bottom:0!important;
+}

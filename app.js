@@ -305,7 +305,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.1.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.2.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

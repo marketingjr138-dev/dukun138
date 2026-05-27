@@ -152,3 +152,9 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Urutan: tab pilih panduan -> video tutorial -> langkah teks.
 - `guideContent` dipindah ke section baru di bawah video.
 - Gambar tutorial tidak tampil di halaman member.
+
+
+## v1.8.2 Hide Hero Banner
+- Banner Panduan Member di hero disembunyikan dari halaman member.
+- Alur tampilan jadi lebih pendek: CTA -> Pilih Panduan -> Video Tutorial -> Langkah teks.
+- Setting banner di admin boleh tetap ada untuk cadangan, tapi tidak ditampilkan di hero member.
