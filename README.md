@@ -242,3 +242,12 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Menambahkan preload bertahap untuk video lain setelah app dibuka.
 - Menambahkan loading overlay agar perpindahan tab terasa lebih halus.
 - Cache buster video naik ke `?v=1.9.2`.
+
+
+## v2.0.0 Final Stable UI Polish
+- Final visual polish tanpa mengubah logic utama.
+- Menghapus teks debug video repo.
+- Hero dibuat lebih compact, presisi, dan premium.
+- CTA Daftar/Login/Chat Admin dirapikan.
+- Static video assets + preload tetap menjadi basis final.
+- Cocok dijadikan master final untuk clone guide brand lain.

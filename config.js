@@ -4,7 +4,7 @@ window.GAS_API_URL = "https://script.google.com/macros/s/AKfycbyi8_-D4kI1l7bnbeu
 window.CONFIG_SOURCE = "auto"; // auto | gas | json
 
 window.DEFAULT_CONFIG = {
-  "version": "1.9.2",
+  "version": "2.0.0",
   "staticVideoMode": true,
   "videoPreload": true,
   "gasApiUrl": "https://script.google.com/macros/s/AKfycbyi8_-D4kI1l7bnbeunoHbpeoO4Aoux3RCiRHq_mD9ZdTnoTOTYVH-EMiukZC324WI_/exec",

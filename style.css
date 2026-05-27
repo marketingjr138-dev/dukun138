@@ -644,3 +644,205 @@ main,
 .phone-frame{
   position:relative;
 }
+
+
+/* v2.0.0 Final Stable UI Polish */
+
+/* Hide internal video debug/status text from member view */
+.video-fallback-note{
+  display:none!important;
+}
+
+/* Hero compact premium polish */
+.hero,
+.hero-section{
+  margin-top:12px!important;
+}
+
+.hero-card,
+.hero-panel,
+.hero-box{
+  padding:18px 18px 20px!important;
+  border-radius:26px!important;
+  min-height:0!important;
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,220,142,.12)!important;
+}
+
+.hero-card .eyebrow,
+.hero-panel .eyebrow,
+.hero-box .eyebrow,
+.eyebrow{
+  font-size:11px!important;
+  line-height:1.1!important;
+  letter-spacing:2.2px!important;
+  margin-bottom:10px!important;
+  color:#f3c75d!important;
+}
+
+/* Keep long title content, but make it visually slimmer and precise */
+#heroTitle,
+.hero-title,
+.hero-card h1,
+.hero-panel h1,
+.hero-box h1{
+  font-size:clamp(34px, 8.4vw, 48px)!important;
+  line-height:.96!important;
+  letter-spacing:-1.8px!important;
+  max-width:11.8ch!important;
+  margin:0 0 14px!important;
+  font-weight:900!important;
+}
+
+#heroSubtitle,
+.hero-subtitle,
+.hero-card .lead,
+.hero-panel .lead,
+.hero-box .lead{
+  font-size:clamp(14px, 3.75vw, 17px)!important;
+  line-height:1.45!important;
+  max-width:31ch!important;
+  margin:0 0 18px!important;
+  color:rgba(244,230,207,.84)!important;
+}
+
+/* CTA polish */
+.hero-actions,
+.cta-row,
+.action-row{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin-top:14px!important;
+}
+
+#btnDaftar,
+.hero-actions .primary,
+.cta-primary,
+a.primary,
+button.primary{
+  grid-column:1 / -1!important;
+  min-height:52px!important;
+  border-radius:18px!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  letter-spacing:-.2px!important;
+  padding:0 18px!important;
+  box-shadow:
+    0 10px 24px rgba(222,158,34,.22),
+    inset 0 1px 0 rgba(255,255,255,.34)!important;
+}
+
+#btnLogin,
+#btnAdmin,
+#btnChat,
+.hero-actions .secondary,
+.hero-actions .ghost,
+.cta-secondary,
+button.ghost,
+a.ghost{
+  min-height:48px!important;
+  border-radius:17px!important;
+  font-size:15px!important;
+  font-weight:850!important;
+  padding:0 14px!important;
+  background:linear-gradient(180deg, rgba(80,55,25,.45), rgba(25,14,8,.58))!important;
+  border:1px solid rgba(245,198,93,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,220,142,.08)!important;
+}
+
+/* Reduce visual gap after hero so tutorial is reached faster */
+.guide-section{
+  margin-top:22px!important;
+}
+
+.guide-section h2,
+.section-head h2{
+  font-size:clamp(30px, 7.8vw, 40px)!important;
+  line-height:1.04!important;
+  letter-spacing:-1.1px!important;
+}
+
+.tabs{
+  gap:10px!important;
+  padding-bottom:6px!important;
+}
+
+.tab{
+  min-height:45px!important;
+  padding:0 18px!important;
+  border-radius:17px!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+
+/* Bottom nav stays tidy */
+.bottom-nav,
+.mobile-nav{
+  border-radius:20px!important;
+  box-shadow:0 -12px 28px rgba(0,0,0,.35)!important;
+}
+
+/* Video frame final polish */
+#tutorialVideo{
+  border-radius:20px!important;
+  background:#050301!important;
+}
+
+.video-loading{
+  border-radius:20px!important;
+}
+
+@media (max-width:480px){
+  .hero-card,
+  .hero-panel,
+  .hero-box{
+    padding:17px 17px 19px!important;
+  }
+  #heroTitle,
+  .hero-title,
+  .hero-card h1,
+  .hero-panel h1,
+  .hero-box h1{
+    font-size:clamp(32px, 8.25vw, 43px)!important;
+    max-width:11.6ch!important;
+    letter-spacing:-1.55px!important;
+  }
+  #heroSubtitle,
+  .hero-subtitle,
+  .hero-card .lead,
+  .hero-panel .lead,
+  .hero-box .lead{
+    max-width:30ch!important;
+    font-size:clamp(14px, 3.65vw, 16px)!important;
+  }
+  #btnDaftar,
+  .hero-actions .primary,
+  .cta-primary,
+  a.primary,
+  button.primary{
+    min-height:50px!important;
+  }
+  #btnLogin,
+  #btnAdmin,
+  #btnChat,
+  .hero-actions .secondary,
+  .hero-actions .ghost,
+  .cta-secondary,
+  button.ghost,
+  a.ghost{
+    min-height:46px!important;
+  }
+}
+
+@media (max-width:380px){
+  #heroTitle,
+  .hero-title,
+  .hero-card h1,
+  .hero-panel h1,
+  .hero-box h1{
+    font-size:31px!important;
+    max-width:11.4ch!important;
+  }
+}

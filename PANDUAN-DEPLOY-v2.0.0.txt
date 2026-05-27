@@ -1,0 +1,26 @@
+PANDUAN CEPAT DEPLOY v2.0.0 FINAL STABLE UI POLISH
+
+Fokus:
+Final fixing visual, bukan ubah logic.
+
+Isi:
+- Hapus teks debug "Video repo aktif: ..."
+- Hero lebih compact dan presisi tanpa mengurangi isi teks.
+- Ukuran judul/subjudul diperkecil agar teks panjang tetap rapi.
+- Tombol Daftar/Login/Chat Admin dibuat lebih premium.
+- Static video assets + preload tetap dipertahankan.
+- Google Sheet sync/admin private/PWA tetap dipertahankan.
+
+Langkah:
+1. Upload/replace patch v2.0.0 ke GitHub.
+2. Pastikan 5 video tetap ada di assets/videos/.
+3. Commit + Push origin.
+4. Tunggu Cloudflare deploy sukses.
+5. Clear site data/incognito.
+6. Test:
+   - Home/Daftar/Deposit/Transfer/WD/Promo
+   - video play + preload
+   - link daftar/login/chat
+   - install PWA
+
+Kalau semua normal, ini bisa dijadikan master final untuk clone brand lain.
