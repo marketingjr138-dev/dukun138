@@ -191,7 +191,21 @@ function getActivePin(){
   const p = config && config.pin ? String(config.pin).trim() : "";
   return p || "7788";
 }
-
+function resetLocalPinToDefault(){
+  try{
+    const local = JSON.parse(localStorage.getItem(KEY) || "null") || {};
+    local.pin = "7788";
+    local.__localOverride = true;
+    localStorage.setItem(KEY, JSON.stringify(local));
+    config = loadConfig();
+    setText("pinError", "");
+    setText("pinAlertInfo", "PIN lokal sudah direset ke 7788. Coba masuk lagi.");
+    setValue("pinInput", "");
+  }catch(e){
+    config.pin = "7788";
+    setText("pinAlertInfo", "PIN sesi ini direset ke 7788.");
+  }
+}
 
 function openAdminPin(){
   setValue("pinInput",""); setText("pinError",""); setText("pinAlertInfo", getPinAlertMessage());
@@ -276,12 +290,12 @@ function bindEvents(){
   });
   document.querySelectorAll(".upload-input").forEach(input=>input.addEventListener("change",async(e)=>{const file=e.target.files&&e.target.files[0]; if(!file)return; await uploadMediaFile(file,e.target.dataset.uploadTarget); e.target.value="";}));
   $("submitPin")?.addEventListener("click",()=>{if($("pinInput")?.value===getActivePin()){$("pinDialog")?.close(); clearPinAttempts(); fillSettings(); $("settingsDialog")?.showModal();}else{recordFailedPinAttempt(); setText("pinError","PIN salah. Akses ditolak."); setText("pinAlertInfo",getPinAlertMessage());}});
-});
+  $("resetLocalPin")?.addEventListener("click",()=>{resetLocalPinToDefault();});
   $("saveSettings")?.addEventListener("click",()=>{try{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); saveConfig(collectSettings()); $("settingsDialog")?.close();}catch(err){alert(err.message||"Setting belum valid.");}});
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.7.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.8.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

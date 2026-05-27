@@ -125,8 +125,8 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Logic ini mengikuti pola yang lebih stabil seperti SATSET/PLAYZONE.
 
 
-## v1.7.7 Private PIN Reset
-- Tombol `Reset PIN lokal ke 7788` dihapus dari UI.
-- Akses admin tetap disamarkan lewat footer `© 2026`.
-- Fallback PIN internal tetap ada jika config pin kosong/rusak.
-- Jika lupa PIN, reset dilakukan dari Google Sheet/config, bukan tombol publik.
+## v1.7.8 Emergency Stable Rollback
+- Basis dikembalikan ke v1.7.6 yang tombolnya stabil.
+- Tombol reset PIN lokal tetap disembunyikan dari UI.
+- Admin tetap disamarkan lewat footer © 2026.
+- Manifest dan service worker tetap versi install-stable.
