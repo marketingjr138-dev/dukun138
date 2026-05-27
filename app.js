@@ -251,13 +251,14 @@ function isDirectVideoUrl(url){
 
 function getStaticVideoUrl(tab){
   const map = {
-    daftar: "assets/videos/tutorial-daftar.mp4",
-    deposit: "assets/videos/tutorial-deposit.mp4",
-    transfer: "assets/videos/tutorial-transfer.mp4",
-    withdraw: "assets/videos/tutorial-withdraw.mp4",
-    promo: "assets/videos/tutorial-promo.mp4"
+    daftar: "/assets/videos/tutorial-daftar.mp4",
+    deposit: "/assets/videos/tutorial-deposit.mp4",
+    transfer: "/assets/videos/tutorial-transfer.mp4",
+    withdraw: "/assets/videos/tutorial-withdraw.mp4",
+    promo: "/assets/videos/tutorial-promo.mp4"
   };
-  return map[tab] || "";
+  const path = map[tab] || "";
+  return path ? `${path}?v=1.9.0` : "";
 }
 
 async function renderMedia(){
@@ -290,7 +291,7 @@ async function renderMedia(){
   }
 
   function showNative(url, noteText){
-    if(source) source.src = url;
+    if(source){ source.src = url; source.type = "video/mp4"; }
     vid.loop = true;
     vid.controls = true;
     vid.playsInline = true;
@@ -339,7 +340,7 @@ async function renderMedia(){
 
   // Static repo MP4 is primary. If the file is missing, browser onerror will fallback to Drive/empty.
   if(staticVideoUrl){
-    showNative(staticVideoUrl, "Mode video asset repo aktif. Jika belum muncul, pastikan file MP4 sudah diupload ke assets/videos/.");
+    showNative(staticVideoUrl, `Mode video asset repo aktif: ${staticVideoUrl.replace("?v=1.9.0","")}`);
     return;
   }
 
@@ -496,7 +497,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.9.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.9.0.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

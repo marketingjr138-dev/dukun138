@@ -223,3 +223,9 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
   - `tutorial-promo.mp4`
 - Native video player aktif, bisa loop, dan bebas overlay Google Drive.
 - Google Drive video tetap menjadi cadangan jika video repo belum tersedia dan config masih menyimpan video.
+
+
+## v1.9.0 Absolute Static Video Path Fix
+- Static video path diganti dari relatif `assets/videos/...` menjadi absolut `/assets/videos/...`.
+- Ditambah cache buster `?v=1.9.0`.
+- Cocok jika video sudah ada di repo tapi HP masih membaca path/cache lama.

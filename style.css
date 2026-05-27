@@ -577,3 +577,9 @@ main,
     min-height:500px;
   }
 }
+
+
+/* v1.9.0 Absolute Static Video Path */
+.video-fallback-note{
+  word-break:break-word;
+}
