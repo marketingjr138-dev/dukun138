@@ -205,3 +205,21 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Link Drive otomatis dikonversi ke `uc?export=download&id=FILE_ID`.
 - Drive preview iframe hanya jadi fallback kalau native video error.
 - Apps Script menambahkan `downloadUrl`.
+
+
+## v1.8.8 Reliable Drive Video Player
+- Google Drive video memakai Drive preview iframe sebagai player utama agar stabil.
+- Direct MP4 tetap memakai native video player + loop.
+- Native Drive download tidak dipaksakan lagi karena sering gagal play di mobile.
+
+
+## v1.8.9 Static Video Assets Mode
+- Video utama dibaca dari `assets/videos/`.
+- Nama file:
+  - `tutorial-daftar.mp4`
+  - `tutorial-deposit.mp4`
+  - `tutorial-transfer.mp4`
+  - `tutorial-withdraw.mp4`
+  - `tutorial-promo.mp4`
+- Native video player aktif, bisa loop, dan bebas overlay Google Drive.
+- Google Drive video tetap menjadi cadangan jika video repo belum tersedia dan config masih menyimpan video.

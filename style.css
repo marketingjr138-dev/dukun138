@@ -507,3 +507,73 @@ main,
     min-height:500px;
   }
 }
+
+
+/* v1.8.8 Reliable Drive Video Player */
+.drive-video-frame{
+  display:none;
+  width:100%;
+  aspect-ratio:9/16;
+  min-height:520px;
+  border:0;
+  border-radius:20px;
+  background:#050301;
+  overflow:hidden;
+}
+#tutorialVideo{
+  width:100%;
+  aspect-ratio:9/16;
+  object-fit:contain;
+  background:#050301;
+  border-radius:20px;
+}
+.video-fallback-note{
+  margin-top:10px;
+  padding:9px 12px;
+  border-radius:14px;
+  border:1px solid rgba(245,198,93,.12);
+  background:rgba(0,0,0,.18);
+  color:rgba(238,222,192,.72);
+  font-size:11px;
+  line-height:1.35;
+}
+@media (max-width:480px){
+  .drive-video-frame{
+    min-height:500px;
+  }
+}
+
+
+/* v1.8.9 Static Video Assets Mode */
+#tutorialVideo{
+  width:100%;
+  aspect-ratio:9/16;
+  object-fit:contain;
+  background:#050301;
+  border-radius:20px;
+}
+.drive-video-frame{
+  display:none;
+  width:100%;
+  aspect-ratio:9/16;
+  min-height:520px;
+  border:0;
+  border-radius:20px;
+  background:#050301;
+  overflow:hidden;
+}
+.video-fallback-note{
+  margin-top:10px;
+  padding:9px 12px;
+  border-radius:14px;
+  border:1px solid rgba(245,198,93,.12);
+  background:rgba(0,0,0,.18);
+  color:rgba(238,222,192,.72);
+  font-size:11px;
+  line-height:1.35;
+}
+@media (max-width:480px){
+  .drive-video-frame{
+    min-height:500px;
+  }
+}

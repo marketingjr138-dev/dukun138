@@ -207,6 +207,17 @@ function renderGuide(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 function extractDriveFileId(url){
   url = String(url || "").trim();
   if(!url) return "";
@@ -228,12 +239,6 @@ function getDrivePreviewUrl(url){
   return id ? `https://drive.google.com/file/d/${id}/preview` : "";
 }
 
-function getDriveNativeVideoUrl(url){
-  const id = extractDriveFileId(url);
-  if(!id) return String(url || "").trim();
-  return `https://drive.google.com/uc?export=download&id=${id}`;
-}
-
 function isDriveUrl(url){
   url = String(url || "").toLowerCase();
   return url.includes("drive.google.com") || url.includes("googleusercontent.com");
@@ -244,7 +249,18 @@ function isDirectVideoUrl(url){
   return url.endsWith(".mp4") || url.includes(".mp4?") || url.includes("video/mp4");
 }
 
-function renderMedia(){
+function getStaticVideoUrl(tab){
+  const map = {
+    daftar: "assets/videos/tutorial-daftar.mp4",
+    deposit: "assets/videos/tutorial-deposit.mp4",
+    transfer: "assets/videos/tutorial-transfer.mp4",
+    withdraw: "assets/videos/tutorial-withdraw.mp4",
+    promo: "assets/videos/tutorial-promo.mp4"
+  };
+  return map[tab] || "";
+}
+
+async function renderMedia(){
   const labels={daftar:"Tutorial Daftar",deposit:"Tutorial Deposit QRIS",transfer:"Tutorial Transfer Saldo Game",withdraw:"Tutorial Withdraw",promo:"Tutorial Promo"};
   if(typeof setText === "function"){
     setText("mediaTitle", `${labels[activeTab]||"Tutorial"} format HP`);
@@ -252,7 +268,8 @@ function renderMedia(){
   }
 
   const media=(config.media && config.media[activeTab]) || {};
-  const originalUrl = (media.video || "").trim();
+  const remoteVideoUrl = (media.video || "").trim();
+  const staticVideoUrl = getStaticVideoUrl(activeTab);
   const vid=$("tutorialVideo");
   const videoEmpty=$("videoEmpty");
   const driveFrame=$("tutorialDriveFrame");
@@ -261,7 +278,7 @@ function renderMedia(){
   if(!vid || !videoEmpty) return;
   const source=vid.querySelector("source");
 
-  if(!originalUrl){
+  function showEmpty(){
     if(source) source.src="";
     try{ vid.pause(); }catch(e){}
     vid.style.display="block";
@@ -270,38 +287,71 @@ function renderMedia(){
     if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
     if(fallbackNote){ fallbackNote.hidden = true; }
     videoEmpty.style.display="flex";
+  }
+
+  function showNative(url, noteText){
+    if(source) source.src = url;
+    vid.loop = true;
+    vid.controls = true;
+    vid.playsInline = true;
+    vid.style.display="block";
+    if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
+    if(fallbackNote){
+      if(noteText){ fallbackNote.hidden = false; fallbackNote.textContent = noteText; }
+      else { fallbackNote.hidden = true; }
+    }
+    videoEmpty.style.display="none";
+    vid.onerror = function(){
+      if(remoteVideoUrl && isDriveUrl(remoteVideoUrl)){
+        const preview = getDrivePreviewUrl(remoteVideoUrl);
+        if(preview && driveFrame){
+          try{ vid.pause(); }catch(e){}
+          if(source) source.src="";
+          vid.style.display="none";
+          vid.load();
+          driveFrame.src = preview;
+          driveFrame.style.display = "block";
+          if(fallbackNote){ fallbackNote.hidden = false; fallbackNote.textContent = "Mode cadangan Google Drive aktif."; }
+          videoEmpty.style.display="none";
+          return;
+        }
+      }
+      showEmpty();
+    };
+    vid.load();
+  }
+
+  function showDrive(url){
+    const preview = getDrivePreviewUrl(url);
+    if(preview && driveFrame){
+      if(source) source.src="";
+      try{ vid.pause(); }catch(e){}
+      vid.style.display="none";
+      vid.load();
+      driveFrame.src = preview;
+      driveFrame.style.display = "block";
+      videoEmpty.style.display="none";
+      if(fallbackNote){ fallbackNote.hidden = false; fallbackNote.textContent = "Player Google Drive aktif karena video asset repo belum tersedia."; }
+      return true;
+    }
+    return false;
+  }
+
+  // Static repo MP4 is primary. If the file is missing, browser onerror will fallback to Drive/empty.
+  if(staticVideoUrl){
+    showNative(staticVideoUrl, "Mode video asset repo aktif. Jika belum muncul, pastikan file MP4 sudah diupload ke assets/videos/.");
     return;
   }
 
-  const nativeUrl = isDriveUrl(originalUrl) ? getDriveNativeVideoUrl(originalUrl) : originalUrl;
-  const drivePreview = getDrivePreviewUrl(originalUrl);
-
-  if(source) source.src = nativeUrl;
-  vid.loop = true;
-  vid.controls = true;
-  vid.playsInline = true;
-  vid.style.display="block";
-  if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
-  if(fallbackNote){ fallbackNote.hidden = true; }
-  videoEmpty.style.display="none";
-
-  vid.onerror = function(){
-    if(drivePreview && driveFrame){
-      try{ vid.pause(); }catch(e){}
-      if(source) source.src="";
-      vid.style.display="none";
-      vid.load();
-      driveFrame.src = drivePreview;
-      driveFrame.style.display = "block";
-      if(fallbackNote){ fallbackNote.hidden = false; }
-      videoEmpty.style.display="none";
-    }else{
-      videoEmpty.style.display="flex";
-      if(fallbackNote){ fallbackNote.hidden = true; }
+  if(remoteVideoUrl){
+    if(isDriveUrl(remoteVideoUrl)){
+      if(showDrive(remoteVideoUrl)) return;
     }
-  };
+    showNative(remoteVideoUrl, "");
+    return;
+  }
 
-  vid.load();
+  showEmpty();
 }
 function renderFaq(){
   const el=$("faqList"); if(!el) return;
@@ -397,7 +447,7 @@ async function uploadMediaFile(file,targetId){
     const payload=await res.json();
     if(!payload.ok) throw new Error(payload.error||"Upload gagal");
     const isImageTarget = ["setLogo","setBanner","setImgDaftar","setImgDeposit","setImgTransfer","setImgWithdraw","setImgPromo"].includes(targetId);
-    setValue(targetId, isImageTarget ? normalizeMediaUrl(payload.displayUrl || payload.url, "image") : (payload.downloadUrl || payload.url || payload.displayUrl || payload.previewUrl || ""));
+    setValue(targetId, isImageTarget ? normalizeMediaUrl(payload.displayUrl || payload.url, "image") : (payload.previewUrl || payload.url || payload.displayUrl || payload.downloadUrl || ""));
     saveConfig(collectSettings());
     updateUploadPreviews();
     setUploadStatus(`Upload berhasil: ${file.name}. Link display sudah distabilkan. Klik Push ke Google Sheet.`);
@@ -446,7 +496,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.7.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.9.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }
