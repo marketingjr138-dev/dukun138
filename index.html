@@ -249,6 +249,11 @@
 
       <p class="muted upload-note">Upload dari galeri butuh Google Apps Script API URL. Setelah upload berhasil, klik Push ke Google Sheet.</p>
       <p id="uploadStatus" class="pull-status"></p>
+      <div class="sync-share-box">
+        <button id="makeSyncLink" class="btn ghost" type="button">Buat Link Share Sinkron</button>
+        <textarea id="syncShareLink" readonly placeholder="Link share sinkron akan muncul di sini"></textarea>
+        <p class="muted">Pakai link ini untuk device baru agar langsung tahu Google Apps Script/Sheet yang dipakai.</p>
+      </div>
       <p id="pullStatus" class="pull-status"></p>
       <div class="modal-actions wrap">
         <button id="saveSettings" class="btn primary" type="button">Simpan Lokal</button>

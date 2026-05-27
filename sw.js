@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-8-3-compact-hero";
+const CACHE_NAME = "dukun138-guide-pwa-v1-8-4-sync-bootstrap";
 const CORE_ASSETS = [
   "./",
   "./index.html",

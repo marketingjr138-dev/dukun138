@@ -432,3 +432,7 @@ main,
     max-width:10ch!important;
   }
 }
+
+/* v1.8.4 Sync Bootstrap UI */
+.sync-share-box{border:1px solid rgba(245,198,93,.14);border-radius:18px;padding:12px;background:rgba(0,0,0,.14);display:grid;gap:8px}
+#syncShareLink{min-height:64px;resize:vertical;font-size:12px;line-height:1.35;opacity:.9}

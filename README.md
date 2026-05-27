@@ -167,3 +167,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Tombol CTA dibuat lebih rapat namun tetap jelas.
 - Banner hero tetap disembunyikan.
 - Video tutorial jadi lebih cepat terlihat.
+
+
+## v1.8.4 Sync Bootstrap Fix
+- Menambahkan gasApiUrl ke config agar endpoint Google Sheet bisa ikut tersimpan.
+- getGasApiUrl membaca localStorage, remote config, DEFAULT_CONFIG, dan window.GAS_API_URL.
+- Mendukung query parameter ?sync=GOOGLE_APPS_SCRIPT_URL untuk device baru.
+- Admin punya tombol Buat Link Share Sinkron.

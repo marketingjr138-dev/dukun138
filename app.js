@@ -8,6 +8,19 @@ const $ = (id) => document.getElementById(id);
 let config = loadConfig();
 let activeTab = getInitialTab();
 let deferredInstallPrompt = null;
+function bootstrapSyncUrlFromQuery(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const raw = params.get("sync") || params.get("api") || "";
+    if(!raw) return;
+    const decoded = decodeURIComponent(raw).trim();
+    if(decoded.startsWith("https://script.google.com/")){
+      localStorage.setItem(GAS_URL_KEY, decoded);
+      if(config) config.gasApiUrl = decoded;
+      history.replaceState(null, "", location.origin + location.pathname + location.hash);
+    }
+  }catch(e){}
+}
 
 function loadConfig(){
   try{
@@ -28,8 +41,14 @@ function getInitialTab(){
   return allowedTabs.includes(s)?s:"daftar";
 }
 function safeLink(link){return link && String(link).trim()?String(link).trim():"#";}
-function getGasApiUrl(){return (localStorage.getItem(GAS_URL_KEY)||window.GAS_API_URL||"").trim();}
-function setGasApiUrl(url){localStorage.setItem(GAS_URL_KEY,(url||"").trim());}
+function getGasApiUrl(){
+  return (localStorage.getItem(GAS_URL_KEY) || (config && config.gasApiUrl) || (window.DEFAULT_CONFIG && window.DEFAULT_CONFIG.gasApiUrl) || window.GAS_API_URL || "").trim();
+}
+function setGasApiUrl(url){
+  const clean = (url || "").trim();
+  localStorage.setItem(GAS_URL_KEY, clean);
+  if(config) config.gasApiUrl = clean;
+}
 function setPullStatus(msg){const el=$("pullStatus"); if(el) el.textContent=msg||"";}
 function setUploadStatus(msg){const el=$("uploadStatus"); if(el) el.textContent=msg||"";}
 function saveConfig(next){config=mergeConfig(window.DEFAULT_CONFIG||{}, {...next,__localOverride:true}); localStorage.setItem(KEY,JSON.stringify(config)); render();}
@@ -68,6 +87,7 @@ function applyRemoteConfig(remote){
   localStorage.setItem(REMOTE_CACHE_KEY, JSON.stringify(remote));
   const localOverride=JSON.parse(localStorage.getItem(KEY)||"null");
   config=mergeConfig(window.DEFAULT_CONFIG||{}, remote);
+  if(remote && remote.gasApiUrl) setGasApiUrl(remote.gasApiUrl);
   if(localOverride && localOverride.__localOverride===true) config=mergeConfig(config, localOverride);
   render();
 }
@@ -229,7 +249,7 @@ function getPinAlertMessage(){const a=JSON.parse(localStorage.getItem("slotGuide
 function fillSettings(){
   setValue("setBrandName", config.brandName); setValue("setTagline", config.tagline); setValue("setHeroTitle", config.heroTitle); setValue("setHeroSubtitle", config.heroSubtitle);
   setValue("setDaftar", config.daftarLink); setValue("setLogin", config.loginLink); setValue("setAdmin", config.adminLink);
-  setValue("setLogo", config.logo || ""); setValue("setBanner", config.banner || ""); setValue("setGasApi", getGasApiUrl());
+  setValue("setLogo", config.logo || ""); setValue("setBanner", config.banner || ""); setValue("setGasApi", getGasApiUrl()); updateSyncShareLink();
   setValue("setPinOld",""); setValue("setPinNew",""); setValue("setPinConfirm","");
   setValue("setDaftarSteps", ((config.guides||{}).daftar||[]).join("\n"));
   setValue("setDepositSteps", ((config.guides||{}).deposit||[]).join("\n"));
@@ -285,7 +305,29 @@ async function uploadMediaFile(file,targetId){
   }catch(err){console.error(err); setUploadStatus("Upload gagal. Cek Apps Script URL, permission, dan ukuran file."); alert("Upload gagal. Cek Apps Script URL, permission, dan ukuran file.");}
 }
 
+function makeSyncShareUrl(){
+  const gasUrl = getGasApiUrl();
+  if(!gasUrl) return "";
+  const u = new URL(location.href);
+  u.searchParams.set("sync", gasUrl);
+  u.hash = "";
+  return u.toString();
+}
+function updateSyncShareLink(){
+  const box = $("syncShareLink");
+  if(!box) return;
+  box.value = makeSyncShareUrl() || "";
+}
+
 function bindEvents(){
+  $("makeSyncLink")?.addEventListener("click", async ()=>{
+    setGasApiUrl($("setGasApi")?.value.trim() || getGasApiUrl());
+    updateSyncShareLink();
+    const link = $("syncShareLink")?.value || "";
+    if(link){
+      try{ await navigator.clipboard.writeText(link); setPullStatus("Link share sinkron disalin."); }catch(e){ setPullStatus("Link share sinkron sudah dibuat. Salin manual."); }
+    }else{ alert("Isi Google Apps Script API URL dulu."); }
+  });
   document.addEventListener("click",(e)=>{
     const tab=e.target.closest(".tab[data-tab]");
     if(tab){e.preventDefault(); setActiveTab(tab.dataset.tab); scrollToVideoTutorial(); return;}
@@ -301,11 +343,11 @@ function bindEvents(){
   document.querySelectorAll(".upload-input").forEach(input=>input.addEventListener("change",async(e)=>{const file=e.target.files&&e.target.files[0]; if(!file)return; await uploadMediaFile(file,e.target.dataset.uploadTarget); e.target.value="";}));
   $("submitPin")?.addEventListener("click",()=>{if($("pinInput")?.value===getActivePin()){$("pinDialog")?.close(); clearPinAttempts(); fillSettings(); $("settingsDialog")?.showModal();}else{recordFailedPinAttempt(); setText("pinError","PIN salah. Akses ditolak."); setText("pinAlertInfo",getPinAlertMessage());}});
   $("resetLocalPin")?.addEventListener("click",()=>{resetLocalPinToDefault();});
-  $("saveSettings")?.addEventListener("click",()=>{try{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); saveConfig(collectSettings()); $("settingsDialog")?.close();}catch(err){alert(err.message||"Setting belum valid.");}});
+  $("saveSettings")?.addEventListener("click",()=>{try{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); saveConfig(collectSettings()); updateSyncShareLink(); $("settingsDialog")?.close();}catch(err){alert(err.message||"Setting belum valid.");}});
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.3.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.4.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }
@@ -324,6 +366,7 @@ function preventZoom(){
   document.addEventListener("gesturestart",e=>e.preventDefault());
 }
 function start(){
+  bootstrapSyncUrlFromQuery();
   bindEvents(); bindInstallPrompt(); preventZoom(); render(); pullRemoteConfig();
   if("serviceWorker" in navigator){
     navigator.serviceWorker.register("./sw.js", {scope:"./"}).then(reg=>{
