@@ -229,3 +229,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Static video path diganti dari relatif `assets/videos/...` menjadi absolut `/assets/videos/...`.
 - Ditambah cache buster `?v=1.9.0`.
 - Cocok jika video sudah ada di repo tapi HP masih membaca path/cache lama.
+
+
+## v1.9.1 Static Video Force Fix
+- Memaksa app membaca video repo `/assets/videos/...` sebagai sumber utama.
+- Menyembunyikan overlay `videoEmpty` ketika static source dipasang.
+- Menonaktifkan Drive iframe untuk mode static repo.
+- Cache buster naik ke `?v=1.9.1`.

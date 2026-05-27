@@ -1,11 +1,11 @@
 /**
- * DUKUN138 GUIDE PWA v1.9.0 - Google Apps Script Sync
+ * DUKUN138 GUIDE PWA v1.9.1 - Google Apps Script Sync
  * Google Sheet sebagai master konten ringan untuk PWA tutorial member.
  */
 const SHEET_NAME = 'CONFIG';
 const LOG_SHEET_NAME = 'LOGS';
 const DEFAULT_CONFIG = {
-  "version": "1.9.0",
+  "version": "1.9.1",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
@@ -138,7 +138,7 @@ function doPost(e) {
 
     if (body.action === 'saveConfig') {
       saveConfigToSheet(body.config || {});
-      logAction('saveConfig', 'ok', 'Config updated from PWA v1.9.0');
+      logAction('saveConfig', 'ok', 'Config updated from PWA v1.9.1');
       return jsonResponse({ ok: true, message: 'Config saved' });
     }
     return jsonResponse({ ok: false, error: 'Unknown action' });
@@ -196,7 +196,7 @@ function saveConfigToSheet(config) {
 
 function configToRows(config) {
   return [
-    ['version', config.version || '1.9.0', 'versi config'],
+    ['version', config.version || '1.9.1', 'versi config'],
     ['pin', config.pin || '7788', 'PIN admin PWA'],
     ['brandName', config.brandName || '', 'nama brand'],
     ['tagline', config.tagline || '', 'tagline kecil'],

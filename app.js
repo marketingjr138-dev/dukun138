@@ -218,36 +218,11 @@ function renderGuide(){
 
 
 
-function extractDriveFileId(url){
-  url = String(url || "").trim();
-  if(!url) return "";
-  const patterns = [
-    /[?&]id=([^&]+)/,
-    /\/d\/([^/=\?]+)/,
-    /\/file\/d\/([^/]+)/,
-    /googleusercontent\.com\/d\/([^/=]+)/
-  ];
-  for(const p of patterns){
-    const m = url.match(p);
-    if(m && m[1]) return m[1];
-  }
-  return "";
-}
 
-function getDrivePreviewUrl(url){
-  const id = extractDriveFileId(url);
-  return id ? `https://drive.google.com/file/d/${id}/preview` : "";
-}
 
-function isDriveUrl(url){
-  url = String(url || "").toLowerCase();
-  return url.includes("drive.google.com") || url.includes("googleusercontent.com");
-}
 
-function isDirectVideoUrl(url){
-  url = String(url || "").trim().toLowerCase();
-  return url.endsWith(".mp4") || url.includes(".mp4?") || url.includes("video/mp4");
-}
+
+
 
 function getStaticVideoUrl(tab){
   const map = {
@@ -257,102 +232,65 @@ function getStaticVideoUrl(tab){
     withdraw: "/assets/videos/tutorial-withdraw.mp4",
     promo: "/assets/videos/tutorial-promo.mp4"
   };
-  const path = map[tab] || "";
-  return path ? `${path}?v=1.9.0` : "";
+  const path = map[tab] || map.daftar;
+  return `${path}?v=1.9.1`;
 }
 
-async function renderMedia(){
-  const labels={daftar:"Tutorial Daftar",deposit:"Tutorial Deposit QRIS",transfer:"Tutorial Transfer Saldo Game",withdraw:"Tutorial Withdraw",promo:"Tutorial Promo"};
+function renderMedia(){
+  const labels = {
+    daftar:"Tutorial Daftar",
+    deposit:"Tutorial Deposit QRIS",
+    transfer:"Tutorial Transfer Saldo Game",
+    withdraw:"Tutorial Withdraw",
+    promo:"Tutorial Promo"
+  };
+
   if(typeof setText === "function"){
-    setText("mediaTitle", `${labels[activeTab]||"Tutorial"} format HP`);
-    setText("guideStepTitle", `${labels[activeTab]||"Panduan"} - langkah tertulis`);
+    setText("mediaTitle", `${labels[activeTab] || "Tutorial"} format HP`);
+    setText("guideStepTitle", `${labels[activeTab] || "Panduan"} - langkah tertulis`);
   }
 
-  const media=(config.media && config.media[activeTab]) || {};
-  const remoteVideoUrl = (media.video || "").trim();
-  const staticVideoUrl = getStaticVideoUrl(activeTab);
-  const vid=$("tutorialVideo");
-  const videoEmpty=$("videoEmpty");
-  const driveFrame=$("tutorialDriveFrame");
-  const fallbackNote=$("videoFallbackNote");
+  const videoUrl = getStaticVideoUrl(activeTab);
+  const vid = $("tutorialVideo");
+  const videoEmpty = $("videoEmpty");
+  const driveFrame = $("tutorialDriveFrame");
+  const fallbackNote = $("videoFallbackNote");
 
-  if(!vid || !videoEmpty) return;
-  const source=vid.querySelector("source");
+  if(!vid) return;
 
-  function showEmpty(){
-    if(source) source.src="";
-    try{ vid.pause(); }catch(e){}
-    vid.style.display="block";
-    vid.loop = true;
-    vid.load();
-    if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
-    if(fallbackNote){ fallbackNote.hidden = true; }
-    videoEmpty.style.display="flex";
+  const source = vid.querySelector("source");
+  if(source){
+    source.src = videoUrl;
+    source.type = "video/mp4";
   }
 
-  function showNative(url, noteText){
-    if(source){ source.src = url; source.type = "video/mp4"; }
-    vid.loop = true;
-    vid.controls = true;
-    vid.playsInline = true;
-    vid.style.display="block";
-    if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
+  vid.style.display = "block";
+  vid.loop = true;
+  vid.controls = true;
+  vid.playsInline = true;
+
+  if(videoEmpty) videoEmpty.style.display = "none";
+  if(driveFrame){
+    driveFrame.src = "";
+    driveFrame.style.display = "none";
+  }
+  if(fallbackNote){
+    fallbackNote.hidden = false;
+    fallbackNote.textContent = `Video repo aktif: ${videoUrl.replace("?v=1.9.1", "")}`;
+  }
+
+  vid.onerror = function(){
+    if(videoEmpty){
+      videoEmpty.textContent = `Video belum terbaca. Cek file: ${videoUrl.replace("?v=1.9.1", "")}`;
+      videoEmpty.style.display = "flex";
+    }
     if(fallbackNote){
-      if(noteText){ fallbackNote.hidden = false; fallbackNote.textContent = noteText; }
-      else { fallbackNote.hidden = true; }
+      fallbackNote.hidden = false;
+      fallbackNote.textContent = "Kalau direct URL video bisa dibuka, refresh/clear cache lalu coba lagi.";
     }
-    videoEmpty.style.display="none";
-    vid.onerror = function(){
-      if(remoteVideoUrl && isDriveUrl(remoteVideoUrl)){
-        const preview = getDrivePreviewUrl(remoteVideoUrl);
-        if(preview && driveFrame){
-          try{ vid.pause(); }catch(e){}
-          if(source) source.src="";
-          vid.style.display="none";
-          vid.load();
-          driveFrame.src = preview;
-          driveFrame.style.display = "block";
-          if(fallbackNote){ fallbackNote.hidden = false; fallbackNote.textContent = "Mode cadangan Google Drive aktif."; }
-          videoEmpty.style.display="none";
-          return;
-        }
-      }
-      showEmpty();
-    };
-    vid.load();
-  }
+  };
 
-  function showDrive(url){
-    const preview = getDrivePreviewUrl(url);
-    if(preview && driveFrame){
-      if(source) source.src="";
-      try{ vid.pause(); }catch(e){}
-      vid.style.display="none";
-      vid.load();
-      driveFrame.src = preview;
-      driveFrame.style.display = "block";
-      videoEmpty.style.display="none";
-      if(fallbackNote){ fallbackNote.hidden = false; fallbackNote.textContent = "Player Google Drive aktif karena video asset repo belum tersedia."; }
-      return true;
-    }
-    return false;
-  }
-
-  // Static repo MP4 is primary. If the file is missing, browser onerror will fallback to Drive/empty.
-  if(staticVideoUrl){
-    showNative(staticVideoUrl, `Mode video asset repo aktif: ${staticVideoUrl.replace("?v=1.9.0","")}`);
-    return;
-  }
-
-  if(remoteVideoUrl){
-    if(isDriveUrl(remoteVideoUrl)){
-      if(showDrive(remoteVideoUrl)) return;
-    }
-    showNative(remoteVideoUrl, "");
-    return;
-  }
-
-  showEmpty();
+  try{ vid.load(); }catch(e){}
 }
 function renderFaq(){
   const el=$("faqList"); if(!el) return;
@@ -497,7 +435,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.9.0.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.9.1.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

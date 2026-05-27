@@ -583,3 +583,24 @@ main,
 .video-fallback-note{
   word-break:break-word;
 }
+
+
+/* v1.9.1 Static Video Force Fix */
+#tutorialVideo{
+  width:100%!important;
+  aspect-ratio:9/16!important;
+  object-fit:contain!important;
+  background:#050301!important;
+  border-radius:20px!important;
+  display:block;
+}
+#videoEmpty{
+  pointer-events:none;
+}
+.drive-video-frame{
+  display:none!important;
+}
+.video-fallback-note{
+  word-break:break-word;
+  font-size:11px;
+}
