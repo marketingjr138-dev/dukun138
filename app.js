@@ -167,16 +167,20 @@ function renderMedia(){
   const labels={daftar:"Tutorial Daftar",deposit:"Tutorial Deposit QRIS",transfer:"Tutorial Transfer Saldo Game",withdraw:"Tutorial Withdraw",promo:"Tutorial Promo"};
   setText("mediaTitle", `${labels[activeTab]||"Tutorial"} format HP`);
   const media=(config.media && config.media[activeTab]) || {};
-  const img=$("tutorialImage"), imageEmpty=$("imageEmpty");
-  if(img && imageEmpty){
-    if(media.image && media.image.trim()){attachImageFallback(img);img.src=normalizeMediaUrl(media.image.trim(),"image");img.style.display="block";imageEmpty.style.display="none";}
-    else{img.removeAttribute("src");img.style.display="none";imageEmpty.style.display="flex";}
-  }
   const vid=$("tutorialVideo"), videoEmpty=$("videoEmpty");
   if(vid && videoEmpty){
     const source=vid.querySelector("source");
-    if(media.video && media.video.trim()){source.src=media.video.trim();videoEmpty.style.display="none";vid.style.display="block";vid.load();}
-    else{source.src="";vid.style.display="block";videoEmpty.style.display="flex";vid.load();}
+    if(media.video && media.video.trim()){
+      source.src=media.video.trim();
+      videoEmpty.style.display="none";
+      vid.style.display="block";
+      vid.load();
+    }else{
+      source.src="";
+      vid.style.display="block";
+      videoEmpty.style.display="flex";
+      vid.load();
+    }
   }
 }
 function renderFaq(){
@@ -184,6 +188,11 @@ function renderFaq(){
   el.innerHTML=(config.faq||[]).map(([q,a])=>`<details class="faq-item"><summary>${escapeHtml(q)}</summary><p>${escapeHtml(a)}</p></details>`).join("");
 }
 function escapeHtml(text){return String(text||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function scrollToVideoTutorial(){
+  const target = document.getElementById("videoTutorial") || document.querySelector(".media-section") || document.querySelector(".guide-section");
+  if(target) target.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
 function setActiveTab(tab){if(!allowedTabs.includes(tab)) tab="daftar"; activeTab=tab; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); if(location.hash.replace("#","")!==activeTab) history.replaceState(null,"",`#${activeTab}`); render();}
 
 
@@ -278,11 +287,11 @@ async function uploadMediaFile(file,targetId){
 function bindEvents(){
   document.addEventListener("click",(e)=>{
     const tab=e.target.closest(".tab[data-tab]");
-    if(tab){e.preventDefault(); setActiveTab(tab.dataset.tab); document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth",block:"start"}); return;}
+    if(tab){e.preventDefault(); setActiveTab(tab.dataset.tab); scrollToVideoTutorial(); return;}
     const admin=e.target.closest("[data-open-admin]");
     if(admin){e.preventDefault(); openAdminPin(); return;}
     const navTab=e.target.closest("[data-nav-tab]");
-    if(navTab){e.preventDefault(); setActiveTab(navTab.dataset.navTab); document.querySelector(".guide-section")?.scrollIntoView({behavior:"smooth",block:"start"}); return;}
+    if(navTab){e.preventDefault(); setActiveTab(navTab.dataset.navTab); scrollToVideoTutorial(); return;}
     const clear=e.target.closest(".clear-media[data-clear-target]");
     if(clear){e.preventDefault(); setValue(clear.dataset.clearTarget,""); try{saveConfig(collectSettings()); updateUploadPreviews(); setUploadStatus("Media dikosongkan. Klik Push ke Google Sheet.");}catch(err){alert(err.message||"Gagal mengosongkan media.");} return;}
     const home=e.target.closest('[data-nav="home"]');
@@ -295,7 +304,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.7.8.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.0.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

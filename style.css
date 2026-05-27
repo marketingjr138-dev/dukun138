@@ -222,3 +222,28 @@ input[readonly]{
 .guide-section{
   margin-top:22px;
 }
+
+
+/* v1.8.0 Video Only First Layout */
+.media-section{
+  scroll-margin-top:14px;
+  margin-top:24px;
+}
+.guide-section{
+  margin-top:22px;
+}
+#tutorialImage,
+#imageEmpty{
+  display:none!important;
+}
+.media-section .image-card,
+.media-section .image-wrap,
+.media-section .tutorial-image,
+.media-section [data-image],
+.media-section .poster-card{
+  display:none!important;
+}
+.video-card,
+.video-frame{
+  width:100%;
+}

@@ -137,3 +137,11 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Saat member klik Daftar/Deposit/Transfer/WD/Promo, halaman langsung scroll ke video tutorial.
 - Langkah teks tetap ada di bawah video sebagai detail lanjutan.
 - Cocok untuk member baru agar tidak bingung harus scroll.
+
+
+## v1.8.0 Video Only First Layout
+- Video tutorial dipindahkan menjadi konten utama setelah tab Pilih Panduan.
+- Teks langkah panduan dipindahkan ke bawah video.
+- Klik Daftar/Deposit/Transfer/WD/Promo langsung scroll ke video.
+- Bagian gambar tutorial tidak ditampilkan di halaman member.
+- Upload gambar di admin boleh tetap ada untuk cadangan/config, tapi member hanya melihat video.
