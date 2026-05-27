@@ -158,3 +158,12 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Banner Panduan Member di hero disembunyikan dari halaman member.
 - Alur tampilan jadi lebih pendek: CTA -> Pilih Panduan -> Video Tutorial -> Langkah teks.
 - Setting banner di admin boleh tetap ada untuk cadangan, tapi tidak ditampilkan di hero member.
+
+
+## v1.8.3 Compact Precision Hero
+- Hero dibuat lebih pendek dan presisi.
+- Headline diperkecil agar tidak terlalu gemuk.
+- Subtitle default dipersingkat.
+- Tombol CTA dibuat lebih rapat namun tetap jelas.
+- Banner hero tetap disembunyikan.
+- Video tutorial jadi lebih cepat terlihat.

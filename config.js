@@ -4,12 +4,12 @@ window.GAS_API_URL = ""; // isi dengan URL Web App Google Apps Script untuk sync
 window.CONFIG_SOURCE = "auto"; // auto | gas | json
 
 window.DEFAULT_CONFIG = {
-  "version": "1.8.2",
+  "version": "1.8.3",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
-  "heroTitle": "Belum paham cara daftar, deposit, transfer saldo, atau withdraw?",
-  "heroSubtitle": "Ikuti tutorial singkat dari HP. Semua dibuat jelas, ringkas, dan gampang dipahami member baru.",
+  "heroTitle": "Panduan cepat member baru",
+  "heroSubtitle": "Tonton video singkat dari HP, lalu ikuti langkahnya di bawah.",
   "logo": "",
   "banner": "",
   "daftarLink": "#",
