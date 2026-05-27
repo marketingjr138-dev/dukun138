@@ -247,3 +247,40 @@ input[readonly]{
 .video-frame{
   width:100%;
 }
+
+
+/* v1.8.1 REAL Video First Layout */
+.guide-section{
+  margin-bottom:16px;
+}
+.video-first-section{
+  scroll-margin-top:16px;
+  margin-top:12px;
+}
+.video-only-wrap{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  width:100%;
+}
+.video-main-frame{
+  width:min(100%, 430px);
+  margin:0 auto;
+}
+.guide-steps-section{
+  margin-top:22px;
+}
+.section-head.compact{
+  margin-bottom:12px;
+}
+#tutorialImage,
+#imageEmpty,
+.image-frame{
+  display:none!important;
+}
+.media-grid{
+  display:block!important;
+}
+.video-frame video{
+  width:100%;
+}

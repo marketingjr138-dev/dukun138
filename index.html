@@ -54,7 +54,6 @@
           <img id="heroBanner" src="assets/banner-placeholder.svg" alt="Banner panduan" />
         </div>
       </section>
-
       <section class="section guide-section">
         <div class="section-head">
           <p class="eyebrow">Pilih panduan</p>
@@ -67,21 +66,16 @@
           <button class="tab" data-tab="withdraw">Withdraw</button>
           <button class="tab" data-tab="promo">Promo</button>
         </div>
-        <article id="guideContent" class="guide-card"></article>
       </section>
 
-      <section class="section media-section">
+      <section id="videoTutorial" class="section media-section video-first-section">
         <div class="section-head">
-          <p class="eyebrow">Gambar & video HP</p>
-          <h2 id="mediaTitle">Tutorial format 9:16</h2>
-          <p id="mediaDesc">Tonton video panduan singkat sebelum membaca langkah detail.</p>
+          <p class="eyebrow">Video tutorial</p>
+          <h2 id="mediaTitle">Tutorial format HP</h2>
+          <p id="mediaDesc">Tonton video panduan singkat dulu. Langkah teks ada di bawah video.</p>
         </div>
-        <div class="media-grid">
-          <div class="phone-frame image-frame">
-            <img id="tutorialImage" src="assets/tutorial-daftar-placeholder.svg" alt="Gambar tutorial" />
-            <div id="imageEmpty" class="media-empty">Gambar tutorial belum disetting.</div>
-          </div>
-          <div class="phone-frame video-frame">
+        <div class="video-only-wrap">
+          <div class="phone-frame video-frame video-main-frame">
             <video id="tutorialVideo" controls playsinline preload="metadata" poster="assets/video-poster-placeholder.svg">
               <source src="" type="video/mp4" />
               Browser kamu belum mendukung video.
@@ -89,6 +83,14 @@
             <div id="videoEmpty" class="media-empty">Video tutorial belum disetting.</div>
           </div>
         </div>
+      </section>
+
+      <section class="section guide-steps-section">
+        <div class="section-head compact">
+          <p class="eyebrow">Langkah detail</p>
+          <h2 id="guideStepTitle">Panduan tertulis</h2>
+        </div>
+        <article id="guideContent" class="guide-card"></article>
       </section>
 
       <section class="section promo-strip">

@@ -145,3 +145,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Klik Daftar/Deposit/Transfer/WD/Promo langsung scroll ke video.
 - Bagian gambar tutorial tidak ditampilkan di halaman member.
 - Upload gambar di admin boleh tetap ada untuk cadangan/config, tapi member hanya melihat video.
+
+
+## v1.8.1 REAL Video First Layout
+- Struktur HTML diubah beneran, bukan cuma scroll/copy.
+- Urutan: tab pilih panduan -> video tutorial -> langkah teks.
+- `guideContent` dipindah ke section baru di bawah video.
+- Gambar tutorial tidak tampil di halaman member.

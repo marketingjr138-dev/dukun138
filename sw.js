@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-8-0-video-only-first";
+const CACHE_NAME = "dukun138-guide-pwa-v1-8-1-real-video-first";
 const CORE_ASSETS = [
   "./",
   "./index.html",
