@@ -1,5 +1,5 @@
 {
-  "version": "1.9.1",
+  "version": "1.9.2",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
@@ -95,5 +95,6 @@
     ]
   ],
   "gasApiUrl": "https://script.google.com/macros/s/AKfycbyi8_-D4kI1l7bnbeunoHbpeoO4Aoux3RCiRHq_mD9ZdTnoTOTYVH-EMiukZC324WI_/exec",
-  "staticVideoMode": true
+  "staticVideoMode": true,
+  "videoPreload": true
 }

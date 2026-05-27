@@ -604,3 +604,43 @@ main,
   word-break:break-word;
   font-size:11px;
 }
+
+
+/* v1.9.2 Video Preload + Smooth Loading */
+.video-loading{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border-radius:20px;
+  background:linear-gradient(180deg, rgba(6,3,1,.72), rgba(6,3,1,.88));
+  color:#fff4d8;
+  text-align:center;
+  pointer-events:none;
+}
+.video-loading[hidden]{
+  display:none!important;
+}
+.video-loading small{
+  color:rgba(238,222,192,.74);
+  font-size:12px;
+}
+.spinner{
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:3px solid rgba(245,198,93,.18);
+  border-top-color:#f5c65d;
+  animation:spinVideo 900ms linear infinite;
+}
+@keyframes spinVideo{
+  to{ transform:rotate(360deg); }
+}
+.video-frame,
+.phone-frame{
+  position:relative;
+}

@@ -236,3 +236,9 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Menyembunyikan overlay `videoEmpty` ketika static source dipasang.
 - Menonaktifkan Drive iframe untuk mode static repo.
 - Cache buster naik ke `?v=1.9.1`.
+
+
+## v1.9.2 Video Preload + Smooth Loading
+- Menambahkan preload bertahap untuk video lain setelah app dibuka.
+- Menambahkan loading overlay agar perpindahan tab terasa lebih halus.
+- Cache buster video naik ke `?v=1.9.2`.

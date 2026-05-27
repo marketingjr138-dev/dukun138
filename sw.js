@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-9-1-static-video-force";
+const CACHE_NAME = "dukun138-guide-pwa-v1-9-2-video-preload";
 const CORE_ASSETS = [
   "./",
   "./index.html",

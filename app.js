@@ -233,7 +233,55 @@ function getStaticVideoUrl(tab){
     promo: "/assets/videos/tutorial-promo.mp4"
   };
   const path = map[tab] || map.daftar;
-  return `${path}?v=1.9.1`;
+  return `${path}?v=1.9.2`;
+}
+
+
+const VIDEO_TABS = ["daftar","deposit","transfer","withdraw","promo"];
+const VIDEO_CACHE_VERSION = "1.9.2";
+const preloadedVideos = new Set();
+
+function preloadVideoAsset(tab){
+  try{
+    const url = getStaticVideoUrl(tab);
+    if(!url || preloadedVideos.has(url)) return;
+    preloadedVideos.add(url);
+
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "video";
+    link.href = url;
+    document.head.appendChild(link);
+
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.muted = true;
+    v.playsInline = true;
+    v.src = url;
+    v.load();
+  }catch(e){}
+}
+
+function warmUpOtherVideos(){
+  try{
+    const order = VIDEO_TABS.filter(t => t !== activeTab);
+    order.forEach((tab, idx) => {
+      setTimeout(() => preloadVideoAsset(tab), 700 + (idx * 900));
+    });
+  }catch(e){}
+}
+
+function showVideoLoading(message){
+  const box = $("videoLoading");
+  if(!box) return;
+  const b = box.querySelector("b");
+  if(b && message) b.textContent = message;
+  box.hidden = false;
+}
+
+function hideVideoLoading(){
+  const box = $("videoLoading");
+  if(box) box.hidden = true;
 }
 
 function renderMedia(){
@@ -270,18 +318,24 @@ function renderMedia(){
   vid.playsInline = true;
 
   if(videoEmpty) videoEmpty.style.display = "none";
+  showVideoLoading("Memuat video...");
   if(driveFrame){
     driveFrame.src = "";
     driveFrame.style.display = "none";
   }
   if(fallbackNote){
     fallbackNote.hidden = false;
-    fallbackNote.textContent = `Video repo aktif: ${videoUrl.replace("?v=1.9.1", "")}`;
+    fallbackNote.textContent = `Video repo aktif: ${videoUrl.replace("?v=1.9.2", "")}`;
   }
 
+  vid.onloadeddata = function(){ hideVideoLoading(); };
+  vid.oncanplay = function(){ hideVideoLoading(); };
+  vid.onplaying = function(){ hideVideoLoading(); };
+
   vid.onerror = function(){
+    hideVideoLoading();
     if(videoEmpty){
-      videoEmpty.textContent = `Video belum terbaca. Cek file: ${videoUrl.replace("?v=1.9.1", "")}`;
+      videoEmpty.textContent = `Video belum terbaca. Cek file: ${videoUrl.replace("?v=1.9.2", "")}`;
       videoEmpty.style.display = "flex";
     }
     if(fallbackNote){
@@ -290,7 +344,7 @@ function renderMedia(){
     }
   };
 
-  try{ vid.load(); }catch(e){}
+  try{ vid.load(); preloadVideoAsset(activeTab); warmUpOtherVideos(); }catch(e){ hideVideoLoading(); }
 }
 function renderFaq(){
   const el=$("faqList"); if(!el) return;
@@ -435,7 +489,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.9.1.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.9.2.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

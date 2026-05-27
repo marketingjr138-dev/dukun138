@@ -1,0 +1,20 @@
+PANDUAN CEPAT DEPLOY v1.9.2
+
+Fokus: Video Preload + Smooth Loading Indicator.
+
+Masalah:
+Saat pindah menu video, file MP4 baru perlu buffer dulu sehingga terlihat lambat pada koneksi pertama.
+
+Fix:
+- Saat app dibuka, video lain mulai dipreload ringan bertahap.
+- Saat user pindah tab, video target langsung dipreload.
+- Ada loading overlay "Memuat video..." agar tidak terlihat kosong.
+- Cache-buster naik ke ?v=1.9.2.
+
+Langkah:
+1. Upload/replace patch v1.9.2 ke GitHub.
+2. Pastikan 5 video tetap ada di assets/videos/.
+3. Push origin.
+4. Tunggu Cloudflare deploy sukses.
+5. Clear site data/incognito.
+6. Test pindah menu Daftar/Deposit/Transfer/WD/Promo.
