@@ -1,5 +1,5 @@
 {
-  "version": "1.8.4",
+  "version": "1.8.5",
   "pin": "7788",
   "brandName": "DUKUN138 GUIDE",
   "tagline": "Daftar • Deposit QRIS • Transfer • Withdraw",
@@ -94,5 +94,5 @@
       "Hubungi admin dan siapkan username atau nomor WhatsApp terdaftar."
     ]
   ],
-  "gasApiUrl": ""
+  "gasApiUrl": "https://script.google.com/macros/s/AKfycbyi8_-D4kI1l7bnbeunoHbpeoO4Aoux3RCiRHq_mD9ZdTnoTOTYVH-EMiukZC324WI_/exec"
 }

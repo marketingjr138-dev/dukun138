@@ -174,3 +174,19 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - getGasApiUrl membaca localStorage, remote config, DEFAULT_CONFIG, dan window.GAS_API_URL.
 - Mendukung query parameter ?sync=GOOGLE_APPS_SCRIPT_URL untuk device baru.
 - Admin punya tombol Buat Link Share Sinkron.
+
+
+## v1.8.5 Permanent Sync Endpoint
+- Endpoint Apps Script bisa ditanam permanen di `config.js` dan `config.json`.
+- Member cukup buka link Cloudflare biasa; tidak perlu `?sync=...`.
+- Aplikasi memprioritaskan endpoint permanen dari `DEFAULT_CONFIG.gasApiUrl`.
+- Tombol/link share sinkron disembunyikan karena tidak diperlukan pada mode permanen.
+- Placeholder endpoint saat ini: `PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE`.
+
+
+## v1.8.5 Fixed - Apps Script URL baked
+- Apps Script endpoint sudah ditanam permanen:
+  `https://script.google.com/macros/s/AKfycbyi8_-D4kI1l7bnbeunoHbpeoO4Aoux3RCiRHq_mD9ZdTnoTOTYVH-EMiukZC324WI_/exec`
+- Cukup share link Cloudflare biasa.
+- Device lain otomatis pull config dari Google Sheet.
+- Tidak perlu link `?sync=...`.

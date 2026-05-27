@@ -8,6 +8,17 @@ const $ = (id) => document.getElementById(id);
 let config = loadConfig();
 let activeTab = getInitialTab();
 let deferredInstallPrompt = null;
+
+function getPermanentGasApiUrl(){
+  const candidates = [
+    (window.DEFAULT_CONFIG && window.DEFAULT_CONFIG.gasApiUrl) || "",
+    window.GAS_API_URL || "",
+    (config && config.gasApiUrl) || ""
+  ].map(x => String(x || "").trim()).filter(Boolean);
+  const found = candidates.find(x => x.startsWith("https://script.google.com/"));
+  return found || "";
+}
+
 function bootstrapSyncUrlFromQuery(){
   try{
     const params = new URLSearchParams(location.search);
@@ -42,12 +53,20 @@ function getInitialTab(){
 }
 function safeLink(link){return link && String(link).trim()?String(link).trim():"#";}
 function getGasApiUrl(){
-  return (localStorage.getItem(GAS_URL_KEY) || (config && config.gasApiUrl) || (window.DEFAULT_CONFIG && window.DEFAULT_CONFIG.gasApiUrl) || window.GAS_API_URL || "").trim();
+  const permanent = getPermanentGasApiUrl();
+  return (
+    permanent ||
+    localStorage.getItem(GAS_URL_KEY) ||
+    (config && config.gasApiUrl) ||
+    (window.DEFAULT_CONFIG && window.DEFAULT_CONFIG.gasApiUrl) ||
+    window.GAS_API_URL ||
+    ""
+  ).trim();
 }
 function setGasApiUrl(url){
   const clean = (url || "").trim();
   localStorage.setItem(GAS_URL_KEY, clean);
-  if(config) config.gasApiUrl = clean;
+  if(config) config.gasApiUrl = clean || getPermanentGasApiUrl();
 }
 function setPullStatus(msg){const el=$("pullStatus"); if(el) el.textContent=msg||"";}
 function setUploadStatus(msg){const el=$("uploadStatus"); if(el) el.textContent=msg||"";}
@@ -347,7 +366,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.4.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.5.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }
