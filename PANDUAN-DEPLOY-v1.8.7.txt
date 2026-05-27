@@ -1,0 +1,20 @@
+PANDUAN CEPAT DEPLOY v1.8.7
+
+Fokus: Native Video First + Loop.
+
+Masalah v1.8.6:
+Google Drive preview iframe bisa menampilkan overlay pause/setting/fullscreen yang sulit dikontrol dan terlihat terus.
+
+Solusi v1.8.7:
+- Video Drive dicoba lebih dulu lewat native <video> player.
+- Native player memakai loop.
+- Kalau native player gagal, baru fallback ke Drive preview iframe.
+- Apps Script mengembalikan downloadUrl dan previewUrl.
+
+Langkah:
+1. Upload/replace file v1.8.7 ke GitHub.
+2. Update Apps Script pakai google-apps-script-v1.8.7.gs.
+3. Deploy Apps Script New Version.
+4. Clear site data/incognito.
+5. Upload ulang satu video kecil atau gunakan video lama lalu Push ulang.
+6. Cek video di halaman member.

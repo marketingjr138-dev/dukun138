@@ -473,3 +473,37 @@ main,
 .video-frame{
   position:relative;
 }
+
+
+/* v1.8.7 Native Video First + Loop */
+#tutorialVideo{
+  width:100%;
+  aspect-ratio:9/16;
+  object-fit:contain;
+  background:#050301;
+  border-radius:20px;
+}
+.drive-video-frame{
+  display:none;
+  width:100%;
+  aspect-ratio:9/16;
+  min-height:520px;
+  border:0;
+  border-radius:20px;
+  background:#050301;
+}
+.video-fallback-note{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(245,198,93,.14);
+  background:rgba(0,0,0,.22);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+@media (max-width:480px){
+  .drive-video-frame{
+    min-height:500px;
+  }
+}

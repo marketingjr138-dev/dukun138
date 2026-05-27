@@ -198,3 +198,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Direct MP4 tetap memakai native `<video>`.
 - Apps Script upload menambahkan `previewUrl`.
 - Video lama dari Google Drive tetap dicoba dibaca dengan ekstraksi file ID.
+
+
+## v1.8.7 Native Video First + Loop
+- Native `<video>` dipakai sebagai player utama supaya kontrol lebih rapi dan bisa loop.
+- Link Drive otomatis dikonversi ke `uc?export=download&id=FILE_ID`.
+- Drive preview iframe hanya jadi fallback kalau native video error.
+- Apps Script menambahkan `downloadUrl`.

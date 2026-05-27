@@ -203,6 +203,10 @@ function renderGuide(){
   el.innerHTML=`<p class="eyebrow">${labels[activeTab]||"Panduan"}</p><h3>${labels[activeTab]||"Panduan"}</h3><p class="muted">${desc[activeTab]||""}</p><ul class="step-list">${steps.map((step,i)=>`<li class="step-item"><div class="step-num">${i+1}</div><div><strong>Langkah ${i+1}</strong><span>${escapeHtml(step)}</span></div></li>`).join("")}</ul>`;
 }
 
+
+
+
+
 function extractDriveFileId(url){
   url = String(url || "").trim();
   if(!url) return "";
@@ -224,6 +228,17 @@ function getDrivePreviewUrl(url){
   return id ? `https://drive.google.com/file/d/${id}/preview` : "";
 }
 
+function getDriveNativeVideoUrl(url){
+  const id = extractDriveFileId(url);
+  if(!id) return String(url || "").trim();
+  return `https://drive.google.com/uc?export=download&id=${id}`;
+}
+
+function isDriveUrl(url){
+  url = String(url || "").toLowerCase();
+  return url.includes("drive.google.com") || url.includes("googleusercontent.com");
+}
+
 function isDirectVideoUrl(url){
   url = String(url || "").trim().toLowerCase();
   return url.endsWith(".mp4") || url.includes(".mp4?") || url.includes("video/mp4");
@@ -237,42 +252,55 @@ function renderMedia(){
   }
 
   const media=(config.media && config.media[activeTab]) || {};
-  const videoUrl = (media.video || "").trim();
+  const originalUrl = (media.video || "").trim();
   const vid=$("tutorialVideo");
   const videoEmpty=$("videoEmpty");
   const driveFrame=$("tutorialDriveFrame");
+  const fallbackNote=$("videoFallbackNote");
 
   if(!vid || !videoEmpty) return;
   const source=vid.querySelector("source");
 
-  if(!videoUrl){
+  if(!originalUrl){
     if(source) source.src="";
     try{ vid.pause(); }catch(e){}
     vid.style.display="block";
+    vid.loop = true;
     vid.load();
     if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
+    if(fallbackNote){ fallbackNote.hidden = true; }
     videoEmpty.style.display="flex";
     return;
   }
 
-  const drivePreview = getDrivePreviewUrl(videoUrl);
-  const useDrivePreview = !!drivePreview && !isDirectVideoUrl(videoUrl);
+  const nativeUrl = isDriveUrl(originalUrl) ? getDriveNativeVideoUrl(originalUrl) : originalUrl;
+  const drivePreview = getDrivePreviewUrl(originalUrl);
 
-  if(useDrivePreview && driveFrame){
-    if(source) source.src="";
-    try{ vid.pause(); }catch(e){}
-    vid.style.display="none";
-    vid.load();
-    driveFrame.src = drivePreview;
-    driveFrame.style.display = "block";
-    videoEmpty.style.display="none";
-    return;
-  }
-
-  if(source) source.src = videoUrl;
+  if(source) source.src = nativeUrl;
+  vid.loop = true;
+  vid.controls = true;
+  vid.playsInline = true;
   vid.style.display="block";
   if(driveFrame){ driveFrame.src=""; driveFrame.style.display="none"; }
+  if(fallbackNote){ fallbackNote.hidden = true; }
   videoEmpty.style.display="none";
+
+  vid.onerror = function(){
+    if(drivePreview && driveFrame){
+      try{ vid.pause(); }catch(e){}
+      if(source) source.src="";
+      vid.style.display="none";
+      vid.load();
+      driveFrame.src = drivePreview;
+      driveFrame.style.display = "block";
+      if(fallbackNote){ fallbackNote.hidden = false; }
+      videoEmpty.style.display="none";
+    }else{
+      videoEmpty.style.display="flex";
+      if(fallbackNote){ fallbackNote.hidden = true; }
+    }
+  };
+
   vid.load();
 }
 function renderFaq(){
@@ -369,7 +397,7 @@ async function uploadMediaFile(file,targetId){
     const payload=await res.json();
     if(!payload.ok) throw new Error(payload.error||"Upload gagal");
     const isImageTarget = ["setLogo","setBanner","setImgDaftar","setImgDeposit","setImgTransfer","setImgWithdraw","setImgPromo"].includes(targetId);
-    setValue(targetId, isImageTarget ? normalizeMediaUrl(payload.displayUrl || payload.url, "image") : (payload.previewUrl || payload.url || payload.displayUrl || ""));
+    setValue(targetId, isImageTarget ? normalizeMediaUrl(payload.displayUrl || payload.url, "image") : (payload.downloadUrl || payload.url || payload.displayUrl || payload.previewUrl || ""));
     saveConfig(collectSettings());
     updateUploadPreviews();
     setUploadStatus(`Upload berhasil: ${file.name}. Link display sudah distabilkan. Klik Push ke Google Sheet.`);
@@ -418,7 +446,7 @@ function bindEvents(){
   $("pullRemoteConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); localStorage.removeItem(KEY); await pullRemoteConfig(); fillSettings();});
   $("pushGasConfig")?.addEventListener("click",async()=>{setGasApiUrl($("setGasApi")?.value.trim()||getGasApiUrl()); await pushConfigToGas();});
   $("resetSettings")?.addEventListener("click",()=>{if(confirm("Reset setting lokal di device ini?")){localStorage.removeItem(KEY); config=loadConfig(); render(); $("settingsDialog")?.close();}});
-  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.6.json"; a.click(); URL.revokeObjectURL(a.href);});
+  $("exportConfig")?.addEventListener("click",()=>{const clean={...config}; delete clean.__localOverride; const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="dukun138-guide-config-v1.8.7.json"; a.click(); URL.revokeObjectURL(a.href);});
   $("importConfig")?.addEventListener("change",async(e)=>{const file=e.target.files[0]; if(!file)return; try{const data=JSON.parse(await file.text()); saveConfig(data); fillSettings(); alert("Config berhasil diimport.");}catch(err){alert("File config tidak valid.");}});
   window.addEventListener("hashchange",()=>{const next=(location.hash||"").replace("#",""); if(allowedTabs.includes(next)){activeTab=next; localStorage.setItem(ACTIVE_TAB_KEY,activeTab); render();}});
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-8-6-drive-video-preview";
+const CACHE_NAME = "dukun138-guide-pwa-v1-8-7-native-video-loop";
 const CORE_ASSETS = [
   "./",
   "./index.html",
