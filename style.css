@@ -453,3 +453,23 @@ main,
   font-size:12px;
   line-height:1.45;
 }
+
+
+/* v1.8.6 Drive Video Preview Fix */
+.drive-video-frame{
+  display:none;
+  width:100%;
+  aspect-ratio:9/16;
+  min-height:520px;
+  border:0;
+  border-radius:20px;
+  background:#050301;
+}
+@media (max-width:480px){
+  .drive-video-frame{
+    min-height:500px;
+  }
+}
+.video-frame{
+  position:relative;
+}

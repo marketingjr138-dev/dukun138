@@ -190,3 +190,11 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Cukup share link Cloudflare biasa.
 - Device lain otomatis pull config dari Google Sheet.
 - Tidak perlu link `?sync=...`.
+
+
+## v1.8.6 Drive Video Preview Fix
+- Video upload dari galeri tetap masuk Google Drive lewat Apps Script.
+- Jika URL video dari Google Drive, aplikasi menampilkan `https://drive.google.com/file/d/FILE_ID/preview`.
+- Direct MP4 tetap memakai native `<video>`.
+- Apps Script upload menambahkan `previewUrl`.
+- Video lama dari Google Drive tetap dicoba dibaca dengan ekstraksi file ID.

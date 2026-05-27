@@ -1,4 +1,4 @@
-const CACHE_NAME = "dukun138-guide-pwa-v1-8-5-permanent-sync-fixed";
+const CACHE_NAME = "dukun138-guide-pwa-v1-8-6-drive-video-preview";
 const CORE_ASSETS = [
   "./",
   "./index.html",

@@ -1,0 +1,21 @@
+PANDUAN CEPAT DEPLOY v1.8.6
+
+Fokus: Drive Video Preview Fix.
+
+Masalah:
+Video upload dari galeri disimpan ke Google Drive via Apps Script.
+Link Drive sering tidak bisa diputar langsung lewat native <video> HTML.
+
+Solusi:
+- Kalau video dari Google Drive, PWA otomatis pakai Drive preview iframe.
+- Kalau video direct MP4, PWA tetap pakai native video player.
+- Apps Script v1.8.6 mengembalikan previewUrl.
+
+Langkah:
+1. Upload/replace file v1.8.6 ke GitHub.
+2. Update Apps Script pakai google-apps-script-v1.8.6.gs.
+3. Deploy Apps Script New Version.
+4. Clear site data/incognito.
+5. Upload ulang satu video kecil dari galeri.
+6. Simpan + Push ke Google Sheet.
+7. Cek video di halaman member.
