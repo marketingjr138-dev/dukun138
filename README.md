@@ -130,3 +130,10 @@ Gunakan video direct `.mp4`, bukan link halaman YouTube.
 - Tombol reset PIN lokal tetap disembunyikan dari UI.
 - Admin tetap disamarkan lewat footer © 2026.
 - Manifest dan service worker tetap versi install-stable.
+
+
+## v1.7.9 Video First UX
+- Section video tutorial dipindah ke atas sebelum langkah teks.
+- Saat member klik Daftar/Deposit/Transfer/WD/Promo, halaman langsung scroll ke video tutorial.
+- Langkah teks tetap ada di bawah video sebagai detail lanjutan.
+- Cocok untuk member baru agar tidak bingung harus scroll.

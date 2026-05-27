@@ -1,0 +1,16 @@
+PANDUAN CEPAT DEPLOY v1.7.9
+
+Fokus: Video First UX.
+
+1. Upload/replace semua file ke root repo GitHub.
+2. Cloudflare Pages:
+   - Framework preset: None
+   - Build command: kosong
+   - Build output directory: .
+   - Root directory: kosong
+3. Apps Script:
+   - Pakai google-apps-script-v1.7.9.gs kalau ingin versi script sama.
+4. Setelah deploy:
+   - Clear site data / buka incognito.
+   - Klik Daftar, Deposit, Transfer, WD, Promo.
+   - Halaman harus langsung lompat ke Video Tutorial, bukan ke teks langkah.

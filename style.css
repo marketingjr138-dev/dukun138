@@ -206,3 +206,19 @@ input[readonly]{
 
 /* v1.7.8 emergency: stable v1.7.6 base, hidden PIN reset */
 .reset-pin-link,#resetLocalPin{display:none!important}
+
+
+/* v1.7.9 Video First UX */
+.media-section{
+  scroll-margin-top:14px;
+}
+.media-section .section-head,
+.media-section .eyebrow{
+  text-align:left;
+}
+.video-first-note{
+  color:var(--muted);
+}
+.guide-section{
+  margin-top:22px;
+}
